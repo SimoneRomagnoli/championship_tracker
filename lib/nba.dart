@@ -25,6 +25,7 @@ class NbaTeam {
   late String urlName;
   late String fullName;
   late String tricode;
+  late bool isNBAFranchise;
 
   NbaTeam(Map<String, dynamic> map) {
     teamId = map["teamId"];
@@ -33,6 +34,7 @@ class NbaTeam {
     urlName = map["urlName"];
     fullName = map["fullName"];
     tricode = map["tricode"];
+    isNBAFranchise = map["isNBAFranchise"];
   }
 }
 

@@ -20,7 +20,7 @@ Future<List<NbaTeam>> getNbaTeams() async {
   var url = Uri.https("data.nba.net", "/10s/prod/v1/2022/teams.json");
   var res = await http.get(url);
   var players = jsonDecode(res.body)["league"]["standard"] as List;
-  return players.map((json) => NbaTeam(json)).toList();
+  return players.map((json) => NbaTeam(json)).toList().where((team) => team.isNBAFranchise).toList();
 }
 
 Future<List<NbaPlayer>> getNbaPlayers() async {
