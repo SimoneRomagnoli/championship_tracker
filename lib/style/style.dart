@@ -6,7 +6,7 @@ const EdgeInsetsGeometry defaultPadding = EdgeInsets.all(10.0);
 
 BoxDecoration defaultContainerDecoration = BoxDecoration(
     border: Border.all(
-        color: Colors.black,
+        color: Colors.black12,
         width: 1.0
     ),
     borderRadius: BorderRadius.circular(3.0)
@@ -32,12 +32,14 @@ class BasicStyledButton extends ClipRRect {
             ),
           ),
         ),
-        TextButton(
-          style: TextButton.styleFrom(
-            padding: defaultPadding,
-          ),
-          onPressed: onPressed,
-          child: Text(text, style: defaultButtonTextStyle,),
+        Center(
+          child: TextButton(
+            style: TextButton.styleFrom(
+              padding: defaultPadding,
+            ),
+            onPressed: onPressed,
+            child: Text(text, style: defaultButtonTextStyle,),
+          )
         ),
       ],
     ),

@@ -1,8 +1,20 @@
 import 'package:championship_tracker/pages/pattern.dart';
+import 'package:championship_tracker/style/style.dart';
 import 'package:flutter/material.dart';
 
 import '../../api/db.dart';
 import '../../api/nba.dart';
+
+BoxDecoration listTileDecoration = const BoxDecoration(
+  border: Border(
+      bottom: BorderSide(
+        color: Colors.black12,
+      ),
+      top: BorderSide(
+        color: Colors.black12,
+      ),
+  ),
+);
 
 class PlayersPage extends ChampionshipTrackerPage {
   const PlayersPage({super.key}) : super(title: "Players");
@@ -22,33 +34,37 @@ class PlayersPageState extends ChampionshipTrackerPageState {
       Expanded(
         child: FutureBuilder(
           future: getNbaPlayers(),
-          builder: buildPlayersGrid,
+          builder: buildPlayersList,
         ),
       ),
     ],
   );
 }
 
-Widget buildPlayersGrid(BuildContext context, AsyncSnapshot<List<NbaPlayer>> snapshot) {
-  return GridView.count(
-      shrinkWrap: true,
-      crossAxisCount: 4,
-      children: snapshot.hasData
-          ? snapshot.data!.map((player) => playerGridRow(player)).expand((e) => e).toList()
-          : []
+Widget buildPlayersList(BuildContext context, AsyncSnapshot<List<NbaPlayer>> snapshot) {
+  return Container(
+    padding: EdgeInsets.zero,
+    decoration: defaultContainerDecoration,
+    child: snapshot.hasData ? ListView.builder(
+        itemBuilder: (_, int index) {
+          return ListTile(
+            minVerticalPadding: -1.0,
+            contentPadding: EdgeInsets.zero,
+            title: Container(
+              padding: defaultPadding,
+              decoration: listTileDecoration,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(flex:25, child: Text(snapshot.data![index].firstName)),
+                  Expanded(flex:25, child: Text(snapshot.data![index].lastName)),
+                  Expanded(flex:25, child: Center(child: Text(snapshot.data![index].pos))),
+                  Expanded(flex:25, child: BasicStyledButton(text: "+", onPressed: () {})),
+                ],
+              ),
+            ),
+          );
+        }
+    ) : Row(),
   );
-}
-
-List<Widget> playerGridRow(NbaPlayer player) {
-  return  [
-    Center(child: Text(player.firstName)),
-    Center(child: Text(player.lastName)),
-    Center(child: Text(player.pos)),
-    Center(
-        child: IconButton(
-          icon: const Icon(Icons.add),
-          onPressed: () {},
-        )
-    ),
-  ];
 }
