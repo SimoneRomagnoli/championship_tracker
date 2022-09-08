@@ -1,7 +1,7 @@
-import 'package:championship_tracker/players_page.dart';
+import 'package:championship_tracker/pages/players/players_page.dart';
 import 'package:flutter/material.dart';
-import 'db.dart';
-import 'nba.dart';
+import 'api/db.dart';
+import 'api/nba.dart';
 
 void main() {
   runApp(const MyApp());

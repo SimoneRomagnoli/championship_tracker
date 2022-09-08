@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+EdgeInsetsGeometry defaultPadding = const EdgeInsets.all(10.0);
+
 class BasicStyledButton extends ClipRRect {
   BasicStyledButton({Key? key, required String text, required Function() onPressed}) : super(
     key: key,
@@ -25,9 +27,26 @@ class BasicStyledButton extends ClipRRect {
             textStyle: const TextStyle(fontSize: 20, color: Colors.white),
           ),
           onPressed: onPressed,
-          child: Text(text, style: const TextStyle(fontSize: 20, color: Colors.white),),
+          child: Text(text, style: const TextStyle(fontSize: 20, color: Colors.white)),
         ),
       ],
     ),
+  );
+}
+
+class BlackColor extends TextStyle {
+  const BlackColor(): super(
+    color: Colors.black
+  );
+}
+
+class WhiteColor extends TextStyle {
+  const WhiteColor(): super(
+      color: Colors.white
+  );
+}
+class BlueColor extends TextStyle {
+  const BlueColor(): super(
+      color: Colors.blue
   );
 }

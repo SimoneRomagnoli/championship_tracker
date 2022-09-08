@@ -1,8 +1,8 @@
-import 'package:championship_tracker/pages.dart';
+import 'package:championship_tracker/pages/pages.dart';
 import 'package:flutter/material.dart';
 
-import 'db.dart';
-import 'nba.dart';
+import '../../api/db.dart';
+import '../../api/nba.dart';
 
 class PlayersPage extends ChampionshipTrackerPage {
   const PlayersPage({super.key}) : super(title: "Players");
