@@ -5,7 +5,7 @@ import 'db.dart';
 import 'nba.dart';
 
 class PlayersPage extends ChampionshipTrackerPage {
-  const PlayersPage({super.key, required super.title});
+  const PlayersPage({super.key}) : super(title: "Players");
 
   @override
   ChampionshipTrackerPageState createState() => PlayersPageState();
@@ -15,22 +15,17 @@ class PlayersPageState extends ChampionshipTrackerPageState {
   PlayersPageState();
 
   @override
-  Widget content = Center(
-    child: Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          const Text("NBA Players"),
-          Expanded(
-            child: FutureBuilder(
-              future: getNbaPlayers(),
-              builder: buildPlayersGrid,
-            ),
-          ),
-        ],
+  Widget content = Column(
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    children: [
+      const Text("NBA Players"),
+      Expanded(
+        child: FutureBuilder(
+          future: getNbaPlayers(),
+          builder: buildPlayersGrid,
+        ),
       ),
-    ),
+    ],
   );
 }
 

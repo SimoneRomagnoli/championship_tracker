@@ -1,3 +1,5 @@
+import 'package:championship_tracker/fantacoaches_page.dart';
+import 'package:championship_tracker/players_page.dart';
 import 'package:flutter/material.dart';
 
 abstract class ChampionshipTrackerPage extends StatefulWidget {
@@ -23,25 +25,42 @@ abstract class ChampionshipTrackerPageState extends State<ChampionshipTrackerPag
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          pagesRow,
-          Expanded(child: content)
+          pagesRow(context),
+          Expanded(
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: content,
+                ),
+              ),
+          )
         ],
       )
     );
   }
 }
 
-Row pagesRow = Row(
-  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  children: [
-    TextButton(
-        onPressed: () {},
-        child: const Text("First")
-    ),
-    TextButton(
-        onPressed: () {},
-        child: const Text("Second")
-    )
-  ],
-);
+Row pagesRow(BuildContext context) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    children: [
+      TextButton(
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return const PlayersPage();
+            }));
+          },
+          child: const Text("Players")
+      ),
+      TextButton(
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return const FantaCoachesPage();
+            }));
+          },
+          child: const Text("FantaCoaches")
+      )
+    ],
+  );
+}
 
