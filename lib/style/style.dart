@@ -1,6 +1,17 @@
 import 'package:flutter/material.dart';
 
-EdgeInsetsGeometry defaultPadding = const EdgeInsets.all(10.0);
+const double defaultFontSize = 15.0;
+const TextStyle defaultButtonTextStyle = TextStyle(fontSize: defaultFontSize, color: Colors.white);
+const EdgeInsetsGeometry defaultPadding = EdgeInsets.all(10.0);
+
+BoxDecoration defaultContainerDecoration = BoxDecoration(
+    border: Border.all(
+        color: Colors.black,
+        width: 1.0
+    ),
+    borderRadius: BorderRadius.circular(3.0)
+);
+
 
 class BasicStyledButton extends ClipRRect {
   BasicStyledButton({Key? key, required String text, required Function() onPressed}) : super(
@@ -23,30 +34,13 @@ class BasicStyledButton extends ClipRRect {
         ),
         TextButton(
           style: TextButton.styleFrom(
-            padding: const EdgeInsets.all(16.0),
-            textStyle: const TextStyle(fontSize: 20, color: Colors.white),
+            padding: defaultPadding,
           ),
           onPressed: onPressed,
-          child: Text(text, style: const TextStyle(fontSize: 20, color: Colors.white)),
+          child: Text(text, style: defaultButtonTextStyle,),
         ),
       ],
     ),
   );
 }
 
-class BlackColor extends TextStyle {
-  const BlackColor(): super(
-    color: Colors.black
-  );
-}
-
-class WhiteColor extends TextStyle {
-  const WhiteColor(): super(
-      color: Colors.white
-  );
-}
-class BlueColor extends TextStyle {
-  const BlueColor(): super(
-      color: Colors.blue
-  );
-}

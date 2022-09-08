@@ -1,4 +1,4 @@
-import 'package:championship_tracker/pages/pages.dart';
+import 'package:championship_tracker/pages/pattern.dart';
 import 'package:flutter/material.dart';
 
 import '../../api/db.dart';
