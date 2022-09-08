@@ -1,4 +1,5 @@
 import 'package:championship_tracker/pages.dart';
+import 'package:championship_tracker/utils.dart';
 import 'package:flutter/material.dart';
 
 import 'db.dart';
@@ -31,7 +32,12 @@ class FantaCoachesPageState extends ChampionshipTrackerPageState {
 
 Widget coachesColumn(BuildContext context, AsyncSnapshot<List<FantaCoach>> snapshot) {
   return Column(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: snapshot.hasData ? snapshot.data!.map((coach) => Text(coach.id)).toList() : [],
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    children: snapshot.hasData
+        ? snapshot.data!
+            .toList().also((l) => l.sort((a, b) => a.firstName.compareTo(b.firstName)))
+            .map((coach) => Text("${coach.firstName} ${coach.lastName}"))
+            .toList()
+        : [],
   );
 }

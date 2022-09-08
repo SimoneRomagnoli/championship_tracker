@@ -1,5 +1,6 @@
 import 'package:championship_tracker/fantacoaches_page.dart';
 import 'package:championship_tracker/players_page.dart';
+import 'package:championship_tracker/style.dart';
 import 'package:flutter/material.dart';
 
 abstract class ChampionshipTrackerPage extends StatefulWidget {
@@ -44,23 +45,25 @@ Row pagesRow(BuildContext context) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     children: [
-      TextButton(
+      BasicStyledButton(
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return const PlayersPage();
             }));
           },
-          child: const Text("Players")
+          text: "Players"
       ),
-      TextButton(
+      BasicStyledButton(
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return const FantaCoachesPage();
             }));
           },
-          child: const Text("FantaCoaches")
+          text: "FantaCoaches"
       )
     ],
   );
 }
+
+
 
