@@ -88,7 +88,8 @@ class PlayersPageState extends ChampionshipTrackerPageState {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             buildSearchFilter(),
-            buildAlertDialogFilter(context, "Positions", 4, Column(
+            buildAlertDialogFilter(context, "Positions", 4, ListView(
+                shrinkWrap: true,
                 children: positions.keys
                     .map((k) =>
                     CheckboxListTile(
@@ -104,21 +105,24 @@ class PlayersPageState extends ChampionshipTrackerPageState {
                 ).toList()
             )),
             const SizedBox(width: 10.0,),
-            buildAlertDialogFilter(context, "Teams", 3, ListView(
-              shrinkWrap: true,
-              children: teams.keys
-                  .map((k) =>
-                  CheckboxListTile(
-                      title: Text(k),
-                      value: teams[k]!.second,
-                      onChanged: (bool? newValue) {
-                        setState(() {
-                          teams[k] = Tuple2(first: teams[k]!.first, second: newValue!);
-                        });
-                        Navigator.pop(context);
-                      }
-                  )
-              ).toList()
+            buildAlertDialogFilter(context, "Teams", 3, ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height/2),
+              child: ListView(
+                  shrinkWrap: true,
+                  children: teams.keys
+                      .map((k) =>
+                      CheckboxListTile(
+                          title: Text(k),
+                          value: teams[k]!.second,
+                          onChanged: (bool? newValue) {
+                            setState(() {
+                              teams[k] = Tuple2(first: teams[k]!.first, second: newValue!);
+                            });
+                            Navigator.pop(context);
+                          }
+                      )
+                  ).toList()
+              )
             ))
           ],
         ),
