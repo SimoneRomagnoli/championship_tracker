@@ -15,7 +15,7 @@ abstract class ChampionshipTrackerPage extends StatefulWidget {
 abstract class ChampionshipTrackerPageState extends State<ChampionshipTrackerPage> {
   ChampionshipTrackerPageState({Key? key});
 
-  abstract Widget content;
+  Widget content(BuildContext context);
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ abstract class ChampionshipTrackerPageState extends State<ChampionshipTrackerPag
               child: Center(
                 child: Padding(
                   padding: defaultPadding,
-                  child: content,
+                  child: content(context),
                 ),
               ),
           )

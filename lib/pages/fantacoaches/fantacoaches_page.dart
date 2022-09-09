@@ -17,7 +17,7 @@ class FantaCoachesPageState extends ChampionshipTrackerPageState {
   FantaCoachesPageState();
 
   @override
-  Widget content = Column(
+  Widget content(BuildContext context) => Column(
     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     children: [
       const Text("Fanta Coaches"),
