@@ -4,10 +4,16 @@ import '../../api/nba.dart';
 import '../../style/style.dart';
 import '../../utils/tuples.dart';
 
-List<NbaPlayer> applyFilters(List<NbaPlayer> players, Map<String, bool> positions, Map<String, Tuple2<String, bool>> teams, ) {
+List<NbaPlayer> applyFilters(List<NbaPlayer> players, Map<String, bool> positions, Map<String, Tuple2<String, bool>> teams, String search) {
   return players.where(
-          (p) => filterByPosition(p, positions) && filterByTeam(p, teams)
+          (p) => filterByPosition(p, positions) && filterByTeam(p, teams) && filterByName(p, search)
   ).toList();
+}
+
+bool filterByName(NbaPlayer player, String search) {
+  return search == "" ||
+      player.firstName.contains(RegExp(search, caseSensitive: false)) ||
+      player.lastName.contains(RegExp(search, caseSensitive: false));
 }
 
 bool filterByPosition(NbaPlayer player, Map<String, bool> positions) {
@@ -20,16 +26,17 @@ bool filterByTeam(NbaPlayer player, Map<String, Tuple2<String, bool>> teams) {
       teams[teams.keys.firstWhere((k) => teams[k]!.first == player.teamId)]!.second;
 }
 
-Widget buildSearchFilter() {
+Widget buildSearchFilter(Function(String) onChanged) {
   return Expanded(
     flex: 4,
     child: Container(
       padding: defaultPadding,
-      child: const TextField(
-        decoration: InputDecoration(
+      child: TextField(
+        decoration: const InputDecoration(
             border: OutlineInputBorder(),
             hintText: "Search"
         ),
+        onChanged: onChanged,
       ),
     ),
   );

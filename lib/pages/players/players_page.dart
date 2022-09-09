@@ -36,6 +36,7 @@ class PlayersPageState extends ChampionshipTrackerPageState {
 
   Map<String, bool> positions = { "G" : false, "F" : false, "C" : false };
   Map<String, Tuple2<String, bool>> teams = {};
+  String search = "";
 
   Widget buildPlayersList(BuildContext context, AsyncSnapshot<List<NbaPlayer>> snapshot) {
     return Container(
@@ -43,7 +44,7 @@ class PlayersPageState extends ChampionshipTrackerPageState {
         decoration: defaultContainerDecoration,
         child: snapshot.hasData
             ? ListView(
-              children: applyFilters(snapshot.data!, positions, teams, )
+              children: applyFilters(snapshot.data!, positions, teams, search)
                   .map((p) => ListTile(
                   minVerticalPadding: -1.0,
                   contentPadding: EdgeInsets.zero,
@@ -87,7 +88,11 @@ class PlayersPageState extends ChampionshipTrackerPageState {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            buildSearchFilter(),
+            buildSearchFilter((newValue) {
+              setState(() {
+                search = newValue;
+              });
+            }),
             buildAlertDialogFilter(context, "Positions", 4, ListView(
                 shrinkWrap: true,
                 children: positions.keys
