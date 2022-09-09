@@ -1,5 +1,7 @@
 import 'package:championship_tracker/pages/pattern.dart';
+import 'package:championship_tracker/pages/players/filters.dart';
 import 'package:championship_tracker/style/style.dart';
+import 'package:championship_tracker/utils/tuples.dart';
 import 'package:flutter/material.dart';
 
 import '../../api/db.dart';
@@ -24,16 +26,16 @@ class PlayersPage extends ChampionshipTrackerPage {
 }
 
 class PlayersPageState extends ChampionshipTrackerPageState {
-  PlayersPageState();
+  PlayersPageState() {
+    getNbaTeams().then((res) {
+      setState(() {
+        teams = { for (var t in res) t.tricode : Tuple2(first: t.teamId, second: false) };
+      });
+    });
+  }
 
   Map<String, bool> positions = { "G" : false, "F" : false, "C" : false };
-  
-  List<NbaPlayer> applyFilters(List<NbaPlayer> players) {
-    return players.where(
-            (p) => !positions.values.reduce((acc, e) => acc || e) ||
-                p.pos.contains(RegExp(positions.keys.where((k) => positions[k]!).reduce((acc, s) => "$acc|$s")))
-    ).toList();
-  }
+  Map<String, Tuple2<String, bool>> teams = {};
 
   Widget buildPlayersList(BuildContext context, AsyncSnapshot<List<NbaPlayer>> snapshot) {
     return Container(
@@ -41,7 +43,7 @@ class PlayersPageState extends ChampionshipTrackerPageState {
         decoration: defaultContainerDecoration,
         child: snapshot.hasData
             ? ListView(
-              children: applyFilters(snapshot.data!)
+              children: applyFilters(snapshot.data!, positions, teams, )
                   .map((p) => ListTile(
                   minVerticalPadding: -1.0,
                   contentPadding: EdgeInsets.zero,
@@ -51,10 +53,10 @@ class PlayersPageState extends ChampionshipTrackerPageState {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Expanded(flex:25, child: Text(p.firstName)),
-                        Expanded(flex:25, child: Text(p.lastName)),
-                        Expanded(flex:25, child: Center(child: Text(p.pos))),
-                        Expanded(flex:25, child: BasicStyledButton(text: "+", onPressed: () {})),
+                        Expanded(flex:20, child: Text(p.firstName)),
+                        Expanded(flex:30, child: Text(p.lastName)),
+                        Expanded(flex:22, child: Center(child: Text(p.pos))),
+                        Expanded(flex:10, child: BasicStyledButton(text: "+", onPressed: () {})),
                       ],
                     ),
                   ),
@@ -83,64 +85,41 @@ class PlayersPageState extends ChampionshipTrackerPageState {
         padding: defaultPadding,
         margin: const EdgeInsets.only(top: 10.0, bottom: 10.0),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Expanded(
-              flex: 3,
-              child: Container(
-                padding: defaultPadding,
-                child: const TextField(
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: "Search"
-                  ),
-                ),
-              ),
-            ),
-
-            Expanded(
-              flex: 3,
-              child:  BasicStyledButton(
-                text: "Positions",
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => Wrap(
-                      children: [
-                        AlertDialog(
-                          title: const Text('Filter By Position'),
-                          content: Container(
-                            decoration: defaultContainerDecoration,
-                            padding: EdgeInsets.zero,
-                            child: Column(
-                              children: positions.keys
-                                  .map((k) =>
-                                    CheckboxListTile(
-                                        title: Text(k),
-                                        value: positions[k],
-                                        onChanged: (bool? newValue) {
-                                          setState(() {
-                                            positions[k] = newValue!;
-                                          });
-                                          Navigator.pop(context);
-                                        }
-                                    )
-                                  ).toList()
-                            )
-                          ),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text('Go Back'),
-                            ),
-                          ],
-                        )
-                      ],
+            buildSearchFilter(),
+            buildAlertDialogFilter(context, "Positions", 4, Column(
+                children: positions.keys
+                    .map((k) =>
+                    CheckboxListTile(
+                        title: Text(k),
+                        value: positions[k],
+                        onChanged: (bool? newValue) {
+                          setState(() {
+                            positions[k] = newValue!;
+                          });
+                          Navigator.pop(context);
+                        }
                     )
-                  );
-                },
-              )
-            )
+                ).toList()
+            )),
+            const SizedBox(width: 10.0,),
+            buildAlertDialogFilter(context, "Teams", 3, ListView(
+              shrinkWrap: true,
+              children: teams.keys
+                  .map((k) =>
+                  CheckboxListTile(
+                      title: Text(k),
+                      value: teams[k]!.second,
+                      onChanged: (bool? newValue) {
+                        setState(() {
+                          teams[k] = Tuple2(first: teams[k]!.first, second: newValue!);
+                        });
+                        Navigator.pop(context);
+                      }
+                  )
+              ).toList()
+            ))
           ],
         ),
       ),
@@ -153,21 +132,3 @@ class PlayersPageState extends ChampionshipTrackerPageState {
     ],
   );
 }
-
-Widget buildTeamsFilter(BuildContext context, AsyncSnapshot<List<NbaTeam>> snapshot) {
-  return DropdownButton<String>(
-    value: "CHI",
-    onChanged: (_) {},
-    items: snapshot.hasData
-        ? snapshot.data!.map((team) => DropdownMenuItem<String>(
-          value: team.tricode,
-          child: CheckboxListTile(
-            title: Text(team.tricode),
-            value: true,
-            onChanged: (_) {},
-          )
-        )).toList()
-        : []
-  );
-}
-
