@@ -7,17 +7,14 @@ import '../../api/db.dart';
 import '../../api/nba.dart';
 
 class FantaCoachesPage extends LoggedPage {
-  const FantaCoachesPage({required this.coachId, super.key}) : super(title: "FantaCoaches");
+  const FantaCoachesPage({required coachId, super.key}) : super(coachId: coachId);
 
-  final String coachId;
   @override
-  LoggedPageState createState() => FantaCoachesPageState(coachId: coachId);
+  LoggedPageState createState() => FantaCoachesPageState();
 }
 
 class FantaCoachesPageState extends LoggedPageState {
-  FantaCoachesPageState({required String coachId}) : super(coachId: coachId) {
-
-  }
+  FantaCoachesPageState();
 
   @override
   Widget content(BuildContext context) => Column(

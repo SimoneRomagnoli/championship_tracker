@@ -41,7 +41,7 @@ class LoginPageState extends DefaultPageState {
           child: BasicStyledButton(
             text: "Login",
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) { return PlayersPage(coachId: username); }));
+              Navigator.push(context, MaterialPageRoute(builder: (context) { return MyTeamPage(coachId: username); }));
             },
           ),
         )

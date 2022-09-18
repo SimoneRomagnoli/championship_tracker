@@ -42,25 +42,26 @@ abstract class DefaultPageState extends State<DefaultPage> {
   }
 }
 
-abstract class LoggedPage extends DefaultPage {
-  const LoggedPage({Key? key, required title}) : super(key: key, title: title);
+abstract class LoggedPage extends StatefulWidget {
+  const LoggedPage({Key? key, required this.coachId}) : super(key: key);
+
+  final String coachId;
 
   @override
   LoggedPageState createState();
 }
 
-abstract class LoggedPageState extends DefaultPageState {
-  LoggedPageState({Key? key, required String coachId}) {
+abstract class LoggedPageState extends State<LoggedPage> {
+  LoggedPageState({Key? key}) {
     getFantaCoaches().then((res) {
       setState(() {
-        fantacoach = res.firstWhere((coach) => coach.id == coachId);
+        fantacoach = res.firstWhere((coach) => coach.id == widget.coachId);
       });
     });
   }
 
   FantaCoach fantacoach = FantaCoach("", "", "");
 
-  @override
   Widget content(BuildContext context);
 
   @override

@@ -18,17 +18,15 @@ BoxDecoration listTileDecoration = const BoxDecoration(
   ),
 );
 
-class PlayersPage extends LoggedPage {
-  const PlayersPage({required this.coachId, super.key}) : super(title: "Players");
-
-  final String coachId;
-
+class MyTeamPage extends LoggedPage {
+  const MyTeamPage({required coachId, super.key}) : super(coachId: coachId);
+  
   @override
-  LoggedPageState createState() => PlayersPageState(coachId: coachId);
+  LoggedPageState createState() => MyTeamPageState();
 }
 
-class PlayersPageState extends LoggedPageState {
-  PlayersPageState({required String coachId}) : super(coachId: coachId) {
+class MyTeamPageState extends LoggedPageState {
+  MyTeamPageState() {
     getNbaTeams().then((res) {
       setState(() {
         teams = { for (var t in res) t.tricode : Tuple2(first: t.teamId, second: false) };
