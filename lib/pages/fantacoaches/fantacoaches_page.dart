@@ -6,15 +6,18 @@ import 'package:flutter/material.dart';
 import '../../api/db.dart';
 import '../../api/nba.dart';
 
-class FantaCoachesPage extends ChampionshipTrackerPage {
-  const FantaCoachesPage({super.key}) : super(title: "FantaCoaches");
+class FantaCoachesPage extends LoggedPage {
+  const FantaCoachesPage({required this.coachId, super.key}) : super(title: "FantaCoaches");
 
+  final String coachId;
   @override
-  ChampionshipTrackerPageState createState() => FantaCoachesPageState();
+  LoggedPageState createState() => FantaCoachesPageState(coachId: coachId);
 }
 
-class FantaCoachesPageState extends ChampionshipTrackerPageState {
-  FantaCoachesPageState();
+class FantaCoachesPageState extends LoggedPageState {
+  FantaCoachesPageState({required String coachId}) : super(coachId: coachId) {
+
+  }
 
   @override
   Widget content(BuildContext context) => Column(

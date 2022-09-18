@@ -1,4 +1,4 @@
-import 'package:championship_tracker/pages/players/players_page.dart';
+import 'package:championship_tracker/pages/login/login.dart';
 import 'package:flutter/material.dart';
 import 'api/db.dart';
 import 'api/nba.dart';
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Championship Tracker',
       theme: ThemeData(primarySwatch: Colors.blue,),
-      home: const PlayersPage(),
+      home: const LoginPage(),
     );
   }
 }

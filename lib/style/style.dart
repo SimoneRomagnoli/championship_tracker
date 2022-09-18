@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 const double defaultFontSize = 15.0;
 const TextStyle defaultButtonTextStyle = TextStyle(fontSize: defaultFontSize, color: Colors.white);
-const EdgeInsetsGeometry defaultPadding = EdgeInsets.all(10.0);
+const EdgeInsetsGeometry defaultPadding = EdgeInsets.all(5.0);
 
 BoxDecoration defaultContainerDecoration = BoxDecoration(
     border: Border.all(

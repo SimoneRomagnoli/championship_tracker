@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../api/nba.dart';
 import '../../style/style.dart';
 import '../fantacoaches/fantacoaches_page.dart';
 import '../players/players_page.dart';
@@ -12,7 +13,7 @@ BoxDecoration navbarDecoration = const BoxDecoration(
   ),
 );
 
-Widget topNavbar(BuildContext context) {
+Widget topNavbar(BuildContext context, FantaCoach fantaCoach) {
   return Padding(
     padding: defaultPadding,
     child: Row(
@@ -21,7 +22,7 @@ Widget topNavbar(BuildContext context) {
         BasicStyledButton(
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return const PlayersPage();
+                return PlayersPage(coachId: fantaCoach.id,);
               }));
             },
             text: "Players"
@@ -29,7 +30,7 @@ Widget topNavbar(BuildContext context) {
         BasicStyledButton(
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return const FantaCoachesPage();
+                return FantaCoachesPage(coachId: fantaCoach.id,);
               }));
             },
             text: "FantaCoaches"
