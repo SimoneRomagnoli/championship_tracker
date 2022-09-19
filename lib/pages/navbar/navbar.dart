@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../api/fanta.dart';
 import '../../api/nba.dart';
 import '../../style/style.dart';
 import '../fantacoaches/fantacoaches_page.dart';

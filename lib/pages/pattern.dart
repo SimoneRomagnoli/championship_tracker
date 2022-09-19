@@ -1,8 +1,8 @@
 import 'package:championship_tracker/api/db.dart';
-import 'package:championship_tracker/api/nba.dart';
 import 'package:championship_tracker/style/style.dart';
 import 'package:flutter/material.dart';
 
+import '../api/fanta.dart';
 import 'navbar/navbar.dart';
 
 abstract class DefaultPage extends StatefulWidget {
@@ -60,7 +60,7 @@ abstract class LoggedPageState extends State<LoggedPage> {
     });
   }
 
-  FantaCoach fantacoach = FantaCoach("", "", "");
+  FantaCoach fantacoach = FantaCoach.empty();
 
   Widget content(BuildContext context);
 

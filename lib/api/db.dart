@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:http/http.dart' as http;
+import 'fanta.dart';
 import 'nba.dart';
 
 Future<Db> openDatabase() async {
@@ -28,4 +29,10 @@ Future<List<NbaPlayer>> getNbaPlayers() async {
   var res = await http.get(url);
   var players = jsonDecode(res.body)["league"]["standard"] as List;
   return players.map((json) => NbaPlayer(json)).toList();
+}
+
+Future<FantaTeam> getFantaTeam(String coachId) async {
+  var db = await openDatabase();
+  var teams = await db.collection("FantaTeams").findOne(where.eq("name", "dunkettola"));
+  return FantaTeam.fromJson((teams!["fantateams"] as List).firstWhere((t) => t["coachId"] == coachId));
 }

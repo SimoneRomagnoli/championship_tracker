@@ -4,6 +4,7 @@ import 'package:championship_tracker/utils/monads.dart';
 import 'package:flutter/material.dart';
 
 import '../../api/db.dart';
+import '../../api/fanta.dart';
 import '../../api/nba.dart';
 
 class FantaCoachesPage extends LoggedPage {

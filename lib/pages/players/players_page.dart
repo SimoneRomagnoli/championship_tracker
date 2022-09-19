@@ -5,6 +5,7 @@ import 'package:championship_tracker/utils/tuples.dart';
 import 'package:flutter/material.dart';
 
 import '../../api/db.dart';
+import '../../api/fanta.dart';
 import '../../api/nba.dart';
 
 BoxDecoration listTileDecoration = const BoxDecoration(
@@ -32,7 +33,13 @@ class MyTeamPageState extends LoggedPageState {
         teams = { for (var t in res) t.tricode : Tuple2(first: t.teamId, second: false) };
       });
     });
+    //getFantaTeam(widget.coachId).then((res) {fantaTeam = res;});
   }
+
+  FantaTeam fantaTeam = FantaTeam.empty();
+
+  Map<String, int> indexedRoles = { "Guards" : 0, "Forwards" : 1, "Centers" : 2, "Head Coach" : 3,};
+  int showingIndex = 0;
 
   Map<String, bool> positions = { "G" : false, "F" : false, "C" : false };
   Map<String, Tuple2<String, bool>> teams = {};
@@ -45,40 +52,45 @@ class MyTeamPageState extends LoggedPageState {
         child: snapshot.hasData
             ? ListView(
               children: applyFilters(snapshot.data!, positions, teams, search)
-                  .map((p) => ListTile(
-                  minVerticalPadding: -1.0,
-                  contentPadding: EdgeInsets.zero,
-                  title: Container(
-                    padding: defaultPadding,
-                    decoration: listTileDecoration,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Expanded(flex:20, child: Text(p.firstName)),
-                        Expanded(flex:30, child: Text(p.lastName)),
-                        Expanded(flex:22, child: Center(child: Text(p.pos))),
-                        Expanded(flex:10, child: BasicStyledButton(text: "+", onPressed: () {})),
-                      ],
-                    ),
-                  ),
-                )
-              ).toList()
+                  .map((p) => playerTile(p, "+", () { setState(() => fantaTeam.addPlayer(p)); })).toList()
             )
             : Row(),
     );
   }
 
+  Widget buildFantaTeam(BuildContext context, AsyncSnapshot<FantaTeam> snapshot) {
+    return IndexedStack(
+      index: showingIndex,
+      children: snapshot.hasData
+          ? [for (String role in indexedRoles.keys.map((c) => c.toLowerCase())) ListView(children: getRoleInTeam(snapshot.data!, role))]
+          : [],
+    );
+  }
+  
   @override
   Widget content(BuildContext context) => Column(
     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     children: [
-      const Padding(
+      Container(
+        decoration: defaultContainerDecoration,
         padding: defaultPadding,
-        child: Text("NBA Players",
-          style: TextStyle(
-              fontSize: defaultFontSize * 1.5,
-              fontWeight: FontWeight.bold
-          ),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                for (String role in indexedRoles.keys) BasicStyledButton(text: role, onPressed: () {
+                  setState(() {
+                    showingIndex = indexedRoles[role]!;
+                  });
+                })
+              ],
+            ),
+            IndexedStack(
+              index: showingIndex,
+              children: [for (String role in indexedRoles.keys.map((c) => c.toLowerCase())) ListView(children: getRoleInTeam(fantaTeam, role))]
+            )
+          ],
         ),
       ),
       Container(
@@ -140,4 +152,57 @@ class MyTeamPageState extends LoggedPageState {
       ),
     ],
   );
+}
+
+ListTile playerTile(NbaPlayer p, String buttonText, Function() onPressed) {
+  return ListTile(
+    minVerticalPadding: -1.0,
+    contentPadding: EdgeInsets.zero,
+    title: Container(
+      padding: defaultPadding,
+      decoration: listTileDecoration,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Expanded(flex:20, child: Text(p.firstName)),
+          Expanded(flex:30, child: Text(p.lastName)),
+          Expanded(flex:22, child: Center(child: Text(p.pos))),
+          Expanded(flex:10, child: BasicStyledButton(text: buttonText, onPressed: onPressed)),
+        ],
+      ),
+    ),
+  );
+}
+
+ListTile headCoachTile(NbaTeam t, String buttonText, Function() onPressed) {
+  return ListTile(
+    minVerticalPadding: -1.0,
+    contentPadding: EdgeInsets.zero,
+    title: Container(
+      padding: defaultPadding,
+      decoration: listTileDecoration,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Expanded(flex:40, child: Text(t.fullName)),
+          Expanded(flex:30, child: Text(t.tricode)),
+          Expanded(flex:10, child: BasicStyledButton(text: buttonText, onPressed: onPressed)),
+        ],
+      ),
+    ),
+  );
+}
+
+List<ListTile> getRoleInTeam(FantaTeam team, String role) {
+  switch (role) {
+    case "guards":
+      return team.guards.map((p) => playerTile(p, "-", () {})).toList();
+    case "forwards":
+      return team.forwards.map((p) => playerTile(p, "-", () {})).toList();
+    case "centers":
+      return team.centers.map((p) => playerTile(p, "-", () {})).toList();
+    case "headcoach":
+      return [headCoachTile(team.headCoach, "-", () {})];
+  }
+  return [];
 }
