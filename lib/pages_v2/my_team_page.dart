@@ -1,43 +1,24 @@
-import 'package:championship_tracker/pages/pattern.dart';
-import 'package:championship_tracker/pages/players/filters.dart';
+import 'package:championship_tracker/api/db.dart';
+import 'package:championship_tracker/api/fanta.dart';
 import 'package:championship_tracker/style/style.dart';
 import 'package:championship_tracker/utils/tuples.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/src/foundation/key.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:championship_tracker/pages/players/players_page.dart';
 
-import '../../api/db.dart';
-import '../../api/fanta.dart';
-import '../../api/nba.dart';
+import '../api/nba.dart';
+import '../pages/players/filters.dart';
 
-BoxDecoration listTileDecoration = const BoxDecoration(
-  border: Border(
-    bottom: BorderSide(
-      color: Colors.black12,
-    ),
-    top: BorderSide(
-      color: Colors.black12,
-    ),
-  ),
-);
-
-class MyTeamPage extends LoggedPage {
-  const MyTeamPage({required coachId, super.key}) : super(coachId: coachId);
+class MyTeamV2Page extends StatefulWidget {
+  const MyTeamV2Page({Key? key}) : super(key: key);
 
   @override
-  LoggedPageState createState() => MyTeamPageState();
+  State<MyTeamV2Page> createState() => _MyTeamV2PageState();
 }
 
-class MyTeamPageState extends LoggedPageState {
-  MyTeamPageState() {
-    getNbaTeams().then((res) {
-      setState(() {
-        teams = {
-          for (var t in res) t.tricode: Tuple2(first: t.teamId, second: false)
-        };
-      });
-    });
-    //getFantaTeam(widget.coachId).then((res) {fantaTeam = res;});
-  }
-
+class _MyTeamV2PageState extends State<MyTeamV2Page> {
   FantaTeam fantaTeam = FantaTeam.empty();
 
   Map<String, int> indexedRoles = {
@@ -52,6 +33,38 @@ class MyTeamPageState extends LoggedPageState {
   Map<String, Tuple2<String, bool>> teams = {};
   String search = "";
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getNbaTeams().then((res) {
+      setState(() {
+        teams = {
+          for (var t in res) t.tricode: Tuple2(first: t.teamId, second: false)
+        };
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Center(
+        child: TextButton(
+          child: Text('Open bottom bar'),
+          onPressed: () {
+            showModalBottomSheet(
+                isScrollControlled: true,
+                context: context,
+                builder: (BuildContext context) {
+                  return bottomSheet(context);
+                });
+          },
+        ),
+      ),
+    );
+  }
+
   Widget buildPlayersList(
       BuildContext context, AsyncSnapshot<List<NbaPlayer>> snapshot) {
     return Container(
@@ -64,27 +77,24 @@ class MyTeamPageState extends LoggedPageState {
                         setState(() => fantaTeam.addPlayer(p));
                       }))
                   .toList())
-          : Row(),
+          : Container(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
     );
   }
 
-  Widget buildFantaTeam(
-      BuildContext context, AsyncSnapshot<FantaTeam> snapshot) {
-    return IndexedStack(
-      index: showingIndex,
-      children: snapshot.hasData
-          ? [
-              for (String role in indexedRoles.keys.map((c) => c.toLowerCase()))
-                ListView(children: getRoleInTeam(snapshot.data!, role))
-            ]
-          : [],
-    );
+  Widget bottomSheet(BuildContext context) {
+    return content(context);
   }
 
-  @override
   Widget content(BuildContext context) => Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
+          SizedBox(
+            height: 30,
+          ),
           /*Container(
         decoration: defaultContainerDecoration,
         padding: defaultPadding,
@@ -173,60 +183,10 @@ class MyTeamPageState extends LoggedPageState {
         ],
       );
 }
+  
 
-ListTile playerTile(NbaPlayer p, String buttonText, Function() onPressed) {
-  return ListTile(
-    minVerticalPadding: -1.0,
-    contentPadding: EdgeInsets.zero,
-    title: Container(
-      padding: defaultPadding,
-      decoration: listTileDecoration,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Expanded(flex: 20, child: Text(p.firstName)),
-          Expanded(flex: 30, child: Text(p.lastName)),
-          Expanded(flex: 22, child: Center(child: Text(p.pos))),
-          Expanded(
-              flex: 10,
-              child: BasicStyledButton(text: buttonText, onPressed: onPressed)),
-        ],
-      ),
-    ),
-  );
-}
 
-ListTile headCoachTile(NbaTeam t, String buttonText, Function() onPressed) {
-  return ListTile(
-    minVerticalPadding: -1.0,
-    contentPadding: EdgeInsets.zero,
-    title: Container(
-      padding: defaultPadding,
-      decoration: listTileDecoration,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Expanded(flex: 40, child: Text(t.fullName)),
-          Expanded(flex: 30, child: Text(t.tricode)),
-          Expanded(
-              flex: 10,
-              child: BasicStyledButton(text: buttonText, onPressed: onPressed)),
-        ],
-      ),
-    ),
-  );
-}
+  
 
-List<ListTile> getRoleInTeam(FantaTeam team, String role) {
-  switch (role) {
-    case "guards":
-      return team.guards.map((p) => playerTile(p, "-", () {})).toList();
-    case "forwards":
-      return team.forwards.map((p) => playerTile(p, "-", () {})).toList();
-    case "centers":
-      return team.centers.map((p) => playerTile(p, "-", () {})).toList();
-    case "headcoach":
-      return [headCoachTile(team.headCoach, "-", () {})];
-  }
-  return [];
-}
+/*
+          */

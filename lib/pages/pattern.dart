@@ -1,4 +1,8 @@
 import 'package:championship_tracker/api/db.dart';
+import 'package:championship_tracker/pages/fantacoaches/fantacoaches_page.dart';
+import 'package:championship_tracker/pages/players/players_page.dart';
+import 'package:championship_tracker/pages_v2/fantacoach_page.dart';
+import 'package:championship_tracker/pages_v2/my_team_page.dart';
 import 'package:championship_tracker/style/style.dart';
 import 'package:flutter/material.dart';
 
@@ -22,9 +26,7 @@ abstract class DefaultPageState extends State<DefaultPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            title: Text(widget.title)
-        ),
+        appBar: AppBar(title: Text(widget.title)),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -37,8 +39,7 @@ abstract class DefaultPageState extends State<DefaultPage> {
               ),
             )
           ],
-        )
-    );
+        ));
   }
 }
 
@@ -60,6 +61,8 @@ abstract class LoggedPageState extends State<LoggedPage> {
     });
   }
 
+  int _selectedIndex = 0;
+
   FantaCoach fantacoach = FantaCoach.empty();
 
   Widget content(BuildContext context);
@@ -67,29 +70,42 @@ abstract class LoggedPageState extends State<LoggedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("${fantacoach.firstName} ${fantacoach.lastName}'s team")
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            decoration: navbarDecoration,
-            child: topNavbar(context, fantacoach),
-          ),
-          Expanded(
-              child: Center(
-                child: Padding(
-                  padding: defaultPadding,
-                  child: content(context),
-                ),
-              ),
-          )
-        ],
+        appBar: AppBar(title: Text(getPageTitle()[_selectedIndex])),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          items: [
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'My Team'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.people), label: 'Fantacoaches'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.settings), label: 'Impostazioni')
+          ],
+        ),
+        body: getPageList(context)[_selectedIndex]);
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  List<String> getPageTitle() {
+    return [
+      "${fantacoach.firstName} ${fantacoach.lastName}'s team",
+      "Fantacoach",
+      "Impostazioni"
+    ];
+  }
+
+  List<Widget> getPageList(BuildContext mContext) {
+    return [
+      MyTeamV2Page(),
+      FantaCoachPage(),
+      Center(
+        child: Text('Impostazioni'),
       )
-    );
+    ];
   }
 }
-
-
-
