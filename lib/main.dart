@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Championship Tracker',
-      theme: ThemeData(primarySwatch: Colors.blue,),
+      theme: ThemeData(primarySwatch: Colors.blue),
       home: const LoginPage(),
     );
   }
@@ -41,24 +41,33 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Widget coachesColumn(BuildContext context, AsyncSnapshot<List<FantaCoach>> snapshot) {
+  Widget coachesColumn(
+      BuildContext context, AsyncSnapshot<List<FantaCoach>> snapshot) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: snapshot.hasData ? snapshot.data!.map((coach) => Text(coach.id)).toList() : [],
+      children: snapshot.hasData
+          ? snapshot.data!.map((coach) => Text(coach.id)).toList()
+          : [],
     );
   }
 
-  Widget teamsColumn(BuildContext context, AsyncSnapshot<List<NbaTeam>> snapshot) {
+  Widget teamsColumn(
+      BuildContext context, AsyncSnapshot<List<NbaTeam>> snapshot) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: snapshot.hasData ? snapshot.data!.map((team) => Text(team.fullName)).toList() : [],
+      children: snapshot.hasData
+          ? snapshot.data!.map((team) => Text(team.fullName)).toList()
+          : [],
     );
   }
 
-  Widget playersColumn(BuildContext context, AsyncSnapshot<List<NbaPlayer>> snapshot) {
+  Widget playersColumn(
+      BuildContext context, AsyncSnapshot<List<NbaPlayer>> snapshot) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: snapshot.hasData ? snapshot.data!.map((player) => playerRow(player)).toList() : [],
+      children: snapshot.hasData
+          ? snapshot.data!.map((player) => playerRow(player)).toList()
+          : [],
     );
   }
 
@@ -70,37 +79,38 @@ class _MyHomePageState extends State<MyHomePage> {
         Center(child: Text(player.lastName)),
         Center(child: Text(player.pos)),
         Center(
-          child: IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () => print("${player.personId} ${player.lastName}"),
-          )
-        ),
+            child: IconButton(
+          icon: const Icon(Icons.add),
+          onPressed: () => print("${player.personId} ${player.lastName}"),
+        )),
       ],
     );
   }
 
   List<Widget> playerGridRow(NbaPlayer player) {
-    return  [
+    return [
       Center(child: Text(player.firstName)),
       Center(child: Text(player.lastName)),
       Center(child: Text(player.pos)),
       Center(
           child: IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () => print("${player.personId} ${player.lastName}"),
-          )
-      ),
+        icon: const Icon(Icons.add),
+        onPressed: () => print("${player.personId} ${player.lastName}"),
+      )),
     ];
   }
 
-  Widget buildPlayersGrid(BuildContext context, AsyncSnapshot<List<NbaPlayer>> snapshot) {
+  Widget buildPlayersGrid(
+      BuildContext context, AsyncSnapshot<List<NbaPlayer>> snapshot) {
     return GridView.count(
         shrinkWrap: true,
         crossAxisCount: 4,
         children: snapshot.hasData
-            ? snapshot.data!.map((player) => playerGridRow(player)).expand((e) => e).toList()
-            : []
-    );
+            ? snapshot.data!
+                .map((player) => playerGridRow(player))
+                .expand((e) => e)
+                .toList()
+            : []);
   }
 
   @override

@@ -1,42 +1,24 @@
-import 'package:championship_tracker/pages/pattern.dart';
-import 'package:championship_tracker/pages/players/filters.dart';
+import 'package:championship_tracker/api/db.dart';
+import 'package:championship_tracker/api/fanta.dart';
 import 'package:championship_tracker/style/style.dart';
 import 'package:championship_tracker/utils/tuples.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/src/foundation/key.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:championship_tracker/pages/players/players_page.dart';
 
-import '../../api/db.dart';
-import '../../api/fanta.dart';
-import '../../api/nba.dart';
+import '../api/nba.dart';
+import '../pages/players/filters.dart';
 
-BoxDecoration listTileDecoration = const BoxDecoration(
-  border: Border(
-    bottom: BorderSide(
-      color: Colors.black12,
-    ),
-    top: BorderSide(
-      color: Colors.black12,
-    ),
-  ),
-);
-
-class MyTeamPage extends LoggedPage {
-  const MyTeamPage({required coachId, super.key}) : super(coachId: coachId);
+class MyTeamV2Page extends StatefulWidget {
+  const MyTeamV2Page({Key? key}) : super(key: key);
 
   @override
-  LoggedPageState createState() => MyTeamPageState();
+  State<MyTeamV2Page> createState() => _MyTeamV2PageState();
 }
 
-class MyTeamPageState extends LoggedPageState {
-  MyTeamPageState() {
-    getNbaTeams().then((res) {
-      setState(() {
-        teams = {
-          for (var t in res) t.tricode: Tuple2(first: t.teamId, second: false)
-        };
-      });
-    });
-  }
-
+class _MyTeamV2PageState extends State<MyTeamV2Page> {
   FantaTeam fantaTeam = FantaTeam.empty();
 
   Map<String, int> indexedRoles = {
@@ -51,6 +33,38 @@ class MyTeamPageState extends LoggedPageState {
   Map<String, Tuple2<String, bool>> teams = {};
   String search = "";
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getNbaTeams().then((res) {
+      setState(() {
+        teams = {
+          for (var t in res) t.tricode: Tuple2(first: t.teamId, second: false)
+        };
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Center(
+        child: TextButton(
+          child: Text('Open bottom bar'),
+          onPressed: () {
+            showModalBottomSheet(
+                isScrollControlled: true,
+                context: context,
+                builder: (BuildContext context) {
+                  return bottomSheet(context);
+                });
+          },
+        ),
+      ),
+    );
+  }
+
   Widget buildPlayersList(
       BuildContext context, AsyncSnapshot<List<NbaPlayer>> snapshot) {
     return Container(
@@ -59,16 +73,50 @@ class MyTeamPageState extends LoggedPageState {
       child: snapshot.hasData
           ? ListView(
               children: applyFilters(snapshot.data!, positions, teams, search)
-                  .map((p) => playerTile(p, "+", () => addPlayer(widget.coachId, p) )).toList()
-            )
-            : Row(),
+                  .map((p) => playerTile(p, "+", () {
+                        setState(() => fantaTeam.addPlayer(p));
+                      }))
+                  .toList())
+          : Container(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
     );
   }
 
-  @override
+  Widget bottomSheet(BuildContext context) {
+    return content(context);
+  }
+
   Widget content(BuildContext context) => Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
+          SizedBox(
+            height: 30,
+          ),
+          /*Container(
+        decoration: defaultContainerDecoration,
+        padding: defaultPadding,
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                for (String role in indexedRoles.keys) BasicStyledButton(text: role, onPressed: () {
+                  setState(() {
+                    showingIndex = indexedRoles[role]!;
+                  });
+                })
+              ],
+            ),
+            IndexedStack(
+              index: showingIndex,
+              children: [for (String role in indexedRoles.keys.map((c) => c.toLowerCase())) ListView(children: getRoleInTeam(fantaTeam, role))]
+            )
+          ],
+        ),
+      ),*/
           Container(
             decoration: defaultContainerDecoration,
             padding: defaultPadding,
@@ -135,45 +183,10 @@ class MyTeamPageState extends LoggedPageState {
         ],
       );
 }
+  
 
-ListTile playerTile(NbaPlayer p, String buttonText, Function() onPressed) {
-  return ListTile(
-    minVerticalPadding: -1.0,
-    contentPadding: EdgeInsets.zero,
-    title: Container(
-      padding: defaultPadding,
-      decoration: listTileDecoration,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Expanded(flex: 20, child: Text(p.firstName)),
-          Expanded(flex: 30, child: Text(p.lastName)),
-          Expanded(flex: 22, child: Center(child: Text(p.pos))),
-          Expanded(
-              flex: 10,
-              child: BasicStyledButton(text: buttonText, onPressed: onPressed)),
-        ],
-      ),
-    ),
-  );
-}
 
-ListTile headCoachTile(NbaHeadCoach hc, String buttonText, Function() onPressed) {
-  return ListTile(
-    minVerticalPadding: -1.0,
-    contentPadding: EdgeInsets.zero,
-    title: Container(
-      padding: defaultPadding,
-      decoration: listTileDecoration,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Expanded(flex:20, child: Text(hc.firstName)),
-          Expanded(flex:30, child: Text(hc.lastName)),
-          const Expanded(flex:22, child: Center(child: Text("HC"))),
-          Expanded(flex:10, child: BasicStyledButton(text: buttonText, onPressed: onPressed)),
-        ],
-      ),
-    ),
-  );
-}
+  
+
+/*
+          */
