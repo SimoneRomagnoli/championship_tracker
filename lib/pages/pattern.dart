@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:championship_tracker/api/db.dart';
 import 'package:championship_tracker/pages/fantacoaches/fantacoaches_page.dart';
 import 'package:championship_tracker/pages/players/players_page.dart';
@@ -70,7 +72,10 @@ abstract class LoggedPageState extends State<LoggedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(getPageTitle()[_selectedIndex])),
+        appBar: AppBar(
+          title: Text(getPageTitle()[_selectedIndex]),
+          elevation: elevationAppBar()[_selectedIndex],
+        ),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
@@ -96,6 +101,10 @@ abstract class LoggedPageState extends State<LoggedPage> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  List<double> elevationAppBar() {
+    return [0, 3, 3, 3];
   }
 
   List<String> getPageTitle() {

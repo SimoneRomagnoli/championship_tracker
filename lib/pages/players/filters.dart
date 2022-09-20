@@ -44,12 +44,24 @@ Widget buildSearchFilter(Function(String) onChanged) {
     child: Container(
       padding: defaultPadding,
       child: TextField(
+        cursorColor: Colors.white,
         decoration: const InputDecoration(
+            hintStyle: TextStyle(color: Colors.white),
+            focusColor: Colors.white,
+            focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(40)),
+                borderSide: BorderSide(color: Colors.white, width: 3)),
+            enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(40)),
+                borderSide: BorderSide(color: Colors.white, width: 3)),
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(40)),
-                borderSide: BorderSide(color: Colors.blueAccent, width: 3)),
+                borderSide: BorderSide(color: Colors.white, width: 3)),
             hintText: "Search",
-            prefixIcon: Icon(Icons.people_alt_outlined)),
+            prefixIcon: Icon(
+              Icons.people_alt_outlined,
+              color: Colors.white,
+            )),
         onChanged: onChanged,
       ),
     ),
@@ -63,7 +75,7 @@ Widget buildAlertDialogFilter(
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              color: Colors.blueAccent,
+              color: Colors.white60,
             ),
             height: 40,
             width: 40,
@@ -83,7 +95,7 @@ Widget buildAlertDialogFilter(
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              color: Colors.blueAccent,
+              color: Colors.white60,
             ),
             height: 40,
             width: 40,
