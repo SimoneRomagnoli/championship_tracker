@@ -9,9 +9,10 @@ import '../../network/manager.dart';
 import '../../utils/tuples.dart';
 
 class TeamPage extends StatefulWidget {
-  const TeamPage({required this.coachId, super.key});
+  const TeamPage({required this.coachId, this.owner = true, super.key});
 
   final String coachId;
+  final bool owner;
 
   @override
   TeamPageState createState() => TeamPageState();
@@ -65,7 +66,7 @@ class TeamPageState extends State<TeamPage> {
                     ],
                   ),
                 ),
-                Expanded(
+                widget.owner ? Expanded(
                   flex: 2,
                   child: TextField(
                     cursorColor: Colors.blue,
@@ -89,9 +90,9 @@ class TeamPageState extends State<TeamPage> {
                     onChanged: (newValue) { if (newValue != "") spendingCredits = int.parse(newValue);},
                     keyboardType: TextInputType.number,
                   )
-                ),
+                ) : const Center(),
                 const SizedBox(width: 10),
-                Container(
+                widget.owner ? Container(
                   decoration: BoxDecoration(
                     color: Colors.blueAccent,
                     borderRadius: BorderRadius.circular(30)),
@@ -102,7 +103,7 @@ class TeamPageState extends State<TeamPage> {
                     ),
                     onPressed: () => NetworkManager.spendCredits(widget.coachId, spendingCredits),
                   )
-                ),
+                ) : const Center(),
               ]
             )
           )
@@ -117,10 +118,21 @@ class TeamPageState extends State<TeamPage> {
       decoration: defaultContainerDecoration,
       child: ListView(
         children: team.players
-              .map((p) => playerTile(p, teams.firstWhere((t) => t.teamId == p.teamId), [], Icons.remove, () => NetworkManager.removeFromTeam(widget.coachId, p)))
+              .map((p) => playerTile(p, teams.firstWhere((t) => t.teamId == p.teamId), [], Icons.remove, () => widget.owner ? NetworkManager.removeFromTeam(widget.coachId, p) : null))
               .toList()
             .also((it) {
-              if (snapshot.data!.first.headCoach != null) it.insert(0, playerTile(team.headCoach!, teams.firstWhere((t) => t.teamId == team.headCoach!.teamId), [], Icons.remove, () => NetworkManager.removeFromTeam(widget.coachId, team.headCoach!)));
+              if (snapshot.data!.first.headCoach != null) {
+                it.insert(
+                    0,
+                    playerTile(
+                        team.headCoach!,
+                        teams.firstWhere((t) => t.teamId == team.headCoach!.teamId),
+                        [],
+                        Icons.remove,
+                        () => widget.owner ? NetworkManager.removeFromTeam(widget.coachId, team.headCoach!) : null
+                    )
+                );
+              }
             }),
       ),
     )
