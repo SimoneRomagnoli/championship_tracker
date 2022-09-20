@@ -1,5 +1,4 @@
 import 'package:championship_tracker/api/db.dart';
-import 'package:championship_tracker/pages/pattern.dart';
 import 'package:championship_tracker/pages/players/players_page.dart';
 import 'package:championship_tracker/style/style.dart';
 import 'package:championship_tracker/utils/monads.dart';
@@ -7,16 +6,18 @@ import 'package:flutter/material.dart';
 
 import '../../api/fanta.dart';
 
-class TeamPage extends LoggedPage {
-  const TeamPage({required super.coachId, super.key});
+class TeamPage extends StatefulWidget {
+  const TeamPage({required this.coachId, super.key});
+
+  final String coachId;
 
   @override
-  LoggedPageState createState() => TeamPageState();
+  TeamPageState createState() => TeamPageState();
 }
 
-class TeamPageState extends LoggedPageState {
+class TeamPageState extends State<TeamPage> {
   @override
-  Widget content(BuildContext context) {
+  Widget build(BuildContext context) {
     return FutureBuilder(
       future: getFantaTeam(widget.coachId),
       builder: buildFantaTeam,
@@ -24,18 +25,17 @@ class TeamPageState extends LoggedPageState {
   }
 
   Widget buildFantaTeam(BuildContext context, AsyncSnapshot<FantaTeam> snapshot) {
-    return Container(
+    return snapshot.hasData ? Container(
       padding: EdgeInsets.zero,
       decoration: defaultContainerDecoration,
       child: ListView(
-        children: snapshot.hasData
-          ? snapshot.data!.players
-              .map((p) => playerTile(p, "-", () => removePlayer(widget.coachId, p)))
+        children: snapshot.data!.players
+              .map((p) => playerTile(p, Icons.remove, () => removePlayer(widget.coachId, p)))
               .toList()
-            .also((it) { if (snapshot.data!.headCoach != null) it.insert(0, headCoachTile(snapshot.data!.headCoach!, "-", () => null)); })
-          : [],
+            .also((it) { if (snapshot.data!.headCoach != null) it.insert(0, headCoachTile(snapshot.data!.headCoach!, Icons.remove, () => null)); }),
       ),
-    );
+    )
+    : const Center(child: CircularProgressIndicator());
   }
 }
 

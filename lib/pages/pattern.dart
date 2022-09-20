@@ -1,9 +1,10 @@
 import 'package:championship_tracker/api/db.dart';
+import 'package:championship_tracker/pages/fantacoaches/fantacoach_page.dart';
+import 'package:championship_tracker/pages/team/team.dart';
 import 'package:championship_tracker/style/style.dart';
 import 'package:flutter/material.dart';
 
 import '../api/fanta.dart';
-import 'navbar/navbar.dart';
 
 abstract class DefaultPage extends StatefulWidget {
   const DefaultPage({Key? key, required this.title}) : super(key: key);
@@ -22,23 +23,20 @@ abstract class DefaultPageState extends State<DefaultPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            title: Text(widget.title)
-        ),
+        //appBar: AppBar(title: Text(widget.title)),
         body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Center(
-                child: Padding(
-                  padding: defaultPadding,
-                  child: content(context),
-                ),
-              ),
-            )
-          ],
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Center(
+            child: Padding(
+              padding: defaultPadding,
+              child: content(context),
+            ),
+          ),
         )
-    );
+      ],
+    ));
   }
 }
 
@@ -60,6 +58,8 @@ abstract class LoggedPageState extends State<LoggedPage> {
     });
   }
 
+  int _selectedIndex = 0;
+
   FantaCoach fantacoach = FantaCoach.empty();
 
   Widget content(BuildContext context);
@@ -67,25 +67,51 @@ abstract class LoggedPageState extends State<LoggedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("${fantacoach.firstName} ${fantacoach.lastName}'s team")
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(
-              child: Center(
-                child: Padding(
-                  padding: defaultPadding,
-                  child: content(context),
-                ),
-              ),
-          )
-        ],
-      )
-    );
+        appBar: AppBar(
+          title: Text(getPageTitle()[_selectedIndex]),
+          elevation: elevationAppBar()[_selectedIndex],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          backgroundColor: Colors.blue,
+          selectedItemColor: Colors.blue,
+          unselectedItemColor: Colors.blueGrey,
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.gamepad), label: 'Players',),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'My Team'),
+            BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Fantacoaches'),
+            BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings')
+          ],
+        ),
+        body: getPageList(context)[_selectedIndex]);
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  List<double> elevationAppBar() {
+    return [0, 3, 3, 3];
+  }
+
+  List<String> getPageTitle() {
+    return [
+      "Players",
+      "${fantacoach.firstName} ${fantacoach.lastName}'s team",
+      "Fantacoach",
+      "Settings"
+    ];
+  }
+
+  List<Widget> getPageList(BuildContext mContext) {
+    return [
+      content(context),
+      TeamPage(coachId: fantacoach.id,),
+      const FantaCoachPage(),
+      const Center(child: Text('Settings'),)
+    ];
   }
 }
-
-
-
