@@ -1,8 +1,5 @@
 import 'package:championship_tracker/pages/login/login.dart';
 import 'package:flutter/material.dart';
-import 'api/db.dart';
-import 'api/fanta.dart';
-import 'api/nba.dart';
 
 void main() {
   runApp(const MyApp());

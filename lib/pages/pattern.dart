@@ -1,10 +1,10 @@
-import 'package:championship_tracker/api/db.dart';
 import 'package:championship_tracker/pages/fantacoaches/fantacoach_page.dart';
 import 'package:championship_tracker/pages/team/team.dart';
 import 'package:championship_tracker/style/style.dart';
 import 'package:flutter/material.dart';
 
-import '../api/fanta.dart';
+import '../models/fanta.dart';
+import '../network/manager.dart';
 
 abstract class DefaultPage extends StatefulWidget {
   const DefaultPage({Key? key, required this.title}) : super(key: key);
@@ -51,7 +51,7 @@ abstract class LoggedPage extends StatefulWidget {
 
 abstract class LoggedPageState extends State<LoggedPage> {
   LoggedPageState({Key? key}) {
-    getFantaCoaches().then((res) {
+    NetworkManager.getFantaCoaches().then((res) {
       setState(() {
         fantacoach = res.firstWhere((coach) => coach.id == widget.coachId);
       });
@@ -109,8 +109,8 @@ abstract class LoggedPageState extends State<LoggedPage> {
   List<Widget> getPageList(BuildContext mContext) {
     return [
       content(context),
-      TeamPage(coachId: fantacoach.id,),
-      const FantaCoachPage(),
+      TeamPage(coachId: fantacoach.id),
+      FantaCoachPage(coachId: fantacoach.id),
       const Center(child: Text('Settings'),)
     ];
   }

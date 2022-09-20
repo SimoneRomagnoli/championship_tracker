@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../api/nba.dart';
+import '../../models/nba.dart';
 import '../../style/style.dart';
 import '../../utils/tuples.dart';
 
