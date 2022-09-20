@@ -30,31 +30,33 @@ class FantaCoach {
 class FantaTeam {
   String name;
   String coachId;
-  NbaTeam headCoach;
-  List<NbaPlayer> guards;
-  List<NbaPlayer> forwards;
-  List<NbaPlayer> centers;
+  NbaHeadCoach? headCoach;
+  List<NbaPlayer> players;
 
-  FantaTeam(this.name, this.coachId, this.headCoach, this.guards, this.forwards, this.centers);
+  FantaTeam(this.name, this.coachId, this.headCoach, this.players);
 
   FantaTeam.fromJson(Map<String, dynamic> json) : this(
     json["name"],
     json["coachId"],
-    NbaTeam(json["headCoach"]),
-    [for (Map<String, dynamic> p in json["guards"]) NbaPlayer(p)],
-    [for (Map<String, dynamic> p in json["forwards"]) NbaPlayer(p)],
-    [for (Map<String, dynamic> p in json["centers"]) NbaPlayer(p)]
+    json["headCoach"] == null ? null : NbaHeadCoach.fromJson(json["headCoach"]),
+    [for (Map<String, dynamic> p in (json["players"] as List)) NbaPlayer.fromJson(p)]
   );
 
-  FantaTeam.empty() : this("", "", NbaTeam.empty(), [], [], []);
+  FantaTeam.empty() : this("", "", null, []);
 
   void addPlayer(NbaPlayer p) {
-    if (p.pos.contains("G")) {
-      guards.add(p);
-    } else if (p.pos.contains("F")) {
-      forwards.add(p);
-    } else if (p.pos.contains("C")) {
-      centers.add(p);
-    }
+    players.add(p);
+  }
+
+  void removePlayer(String personId) {
+    players = players.where((p) => p.personId != personId).toList();
+  }
+
+  void addHeadCoach(NbaHeadCoach coach) {
+    headCoach = coach;
+  }
+
+  void removeHeadCoach() {
+    headCoach = null;
   }
 }

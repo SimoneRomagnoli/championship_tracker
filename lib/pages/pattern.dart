@@ -73,10 +73,6 @@ abstract class LoggedPageState extends State<LoggedPage> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            decoration: navbarDecoration,
-            child: topNavbar(context, fantacoach),
-          ),
           Expanded(
               child: Center(
                 child: Padding(

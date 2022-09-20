@@ -28,11 +28,35 @@ Future<List<NbaPlayer>> getNbaPlayers() async {
   var url = Uri.https("data.nba.net", "/10s/prod/v1/2022/players.json");
   var res = await http.get(url);
   var players = jsonDecode(res.body)["league"]["standard"] as List;
-  return players.map((json) => NbaPlayer(json)).toList();
+  return players.map((json) => NbaPlayer.fromJson(json)).toList();
+}
+
+Future<List<NbaHeadCoach>> getNbaHeadCoaches() async {
+  var url = Uri.https("data.nba.net", "/10s/prod/v1/2022/coaches.json");
+  var res = await http.get(url);
+  var coaches = jsonDecode(res.body)["league"]["standard"] as List;
+  return coaches.map((json) => NbaHeadCoach.fromJson(json)).toList();
 }
 
 Future<FantaTeam> getFantaTeam(String coachId) async {
   var db = await openDatabase();
-  var teams = await db.collection("FantaTeams").findOne(where.eq("name", "dunkettola"));
-  return FantaTeam.fromJson((teams!["fantateams"] as List).firstWhere((t) => t["coachId"] == coachId));
+  var teams = await db.collection("FantaTeams").modernFindOne(selector: where.eq("name", "dunkettola"));
+  var team = (teams!["fantateams"] as List).firstWhere((p) => p["coachId"] == coachId);
+  return FantaTeam.fromJson(team);
+}
+
+void addPlayer(String coachId, NbaPlayer player) async {
+  var db = await openDatabase();
+  db.collection("FantaTeams").modernUpdate(
+    where.eq("fantateams.coachId", coachId),
+    modify.push("fantateams.\$.players", player.toMap())
+  );
+}
+
+void removePlayer(String coachId, NbaPlayer player) async {
+  var db = await openDatabase();
+  db.collection("FantaTeams").modernUpdate(
+      where.eq("fantateams.coachId", coachId),
+      modify.pull("fantateams.\$.players", { "personId" : player.personId })
+  );
 }

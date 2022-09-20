@@ -33,10 +33,7 @@ class MyTeamPageState extends LoggedPageState {
         teams = { for (var t in res) t.tricode : Tuple2(first: t.teamId, second: false) };
       });
     });
-    //getFantaTeam(widget.coachId).then((res) {fantaTeam = res;});
   }
-
-  FantaTeam fantaTeam = FantaTeam.empty();
 
   Map<String, int> indexedRoles = { "Guards" : 0, "Forwards" : 1, "Centers" : 2, "Head Coach" : 3,};
   int showingIndex = 0;
@@ -52,18 +49,9 @@ class MyTeamPageState extends LoggedPageState {
         child: snapshot.hasData
             ? ListView(
               children: applyFilters(snapshot.data!, positions, teams, search)
-                  .map((p) => playerTile(p, "+", () { setState(() => fantaTeam.addPlayer(p)); })).toList()
+                  .map((p) => playerTile(p, "+", () => addPlayer(widget.coachId, p) )).toList()
             )
             : Row(),
-    );
-  }
-
-  Widget buildFantaTeam(BuildContext context, AsyncSnapshot<FantaTeam> snapshot) {
-    return IndexedStack(
-      index: showingIndex,
-      children: snapshot.hasData
-          ? [for (String role in indexedRoles.keys.map((c) => c.toLowerCase())) ListView(children: getRoleInTeam(snapshot.data!, role))]
-          : [],
     );
   }
   
@@ -71,28 +59,6 @@ class MyTeamPageState extends LoggedPageState {
   Widget content(BuildContext context) => Column(
     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     children: [
-      Container(
-        decoration: defaultContainerDecoration,
-        padding: defaultPadding,
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                for (String role in indexedRoles.keys) BasicStyledButton(text: role, onPressed: () {
-                  setState(() {
-                    showingIndex = indexedRoles[role]!;
-                  });
-                })
-              ],
-            ),
-            IndexedStack(
-              index: showingIndex,
-              children: [for (String role in indexedRoles.keys.map((c) => c.toLowerCase())) ListView(children: getRoleInTeam(fantaTeam, role))]
-            )
-          ],
-        ),
-      ),
       Container(
         decoration: defaultContainerDecoration,
         padding: defaultPadding,
@@ -174,7 +140,7 @@ ListTile playerTile(NbaPlayer p, String buttonText, Function() onPressed) {
   );
 }
 
-ListTile headCoachTile(NbaTeam t, String buttonText, Function() onPressed) {
+ListTile headCoachTile(NbaHeadCoach hc, String buttonText, Function() onPressed) {
   return ListTile(
     minVerticalPadding: -1.0,
     contentPadding: EdgeInsets.zero,
@@ -184,25 +150,12 @@ ListTile headCoachTile(NbaTeam t, String buttonText, Function() onPressed) {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Expanded(flex:40, child: Text(t.fullName)),
-          Expanded(flex:30, child: Text(t.tricode)),
+          Expanded(flex:20, child: Text(hc.firstName)),
+          Expanded(flex:30, child: Text(hc.lastName)),
+          const Expanded(flex:22, child: Center(child: Text("HC"))),
           Expanded(flex:10, child: BasicStyledButton(text: buttonText, onPressed: onPressed)),
         ],
       ),
     ),
   );
-}
-
-List<ListTile> getRoleInTeam(FantaTeam team, String role) {
-  switch (role) {
-    case "guards":
-      return team.guards.map((p) => playerTile(p, "-", () {})).toList();
-    case "forwards":
-      return team.forwards.map((p) => playerTile(p, "-", () {})).toList();
-    case "centers":
-      return team.centers.map((p) => playerTile(p, "-", () {})).toList();
-    case "headcoach":
-      return [headCoachTile(team.headCoach, "-", () {})];
-  }
-  return [];
 }

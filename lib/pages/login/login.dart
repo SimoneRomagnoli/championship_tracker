@@ -3,6 +3,7 @@ import 'package:championship_tracker/style/style.dart';
 import 'package:flutter/material.dart';
 
 import '../pattern.dart';
+import '../team/team.dart';
 
 class LoginPage extends DefaultPage {
   const LoginPage({Key? key}) : super(key: key, title: "Login");
@@ -41,7 +42,8 @@ class LoginPageState extends DefaultPageState {
           child: BasicStyledButton(
             text: "Login",
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) { return MyTeamPage(coachId: username); }));
+              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) { return TeamPage(coachId: username); }), (_) => false);
+              //Navigator.push(context, MaterialPageRoute(builder: (context) { return TeamPage(coachId: username); }));
             },
           ),
         )
