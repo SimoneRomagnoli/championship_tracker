@@ -1,6 +1,6 @@
 import 'package:championship_tracker/api/db.dart';
-import 'package:championship_tracker/pages_v2/fantacoach_page.dart';
-import 'package:championship_tracker/pages_v2/my_team_page.dart';
+import 'package:championship_tracker/pages/fantacoaches/fantacoach_page.dart';
+import 'package:championship_tracker/pages/team/team.dart';
 import 'package:championship_tracker/style/style.dart';
 import 'package:flutter/material.dart';
 
@@ -78,15 +78,10 @@ abstract class LoggedPageState extends State<LoggedPage> {
           selectedItemColor: Colors.blue,
           unselectedItemColor: Colors.blueGrey,
           items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.gamepad),
-              label: 'Players',
-            ),
+            BottomNavigationBarItem(icon: Icon(Icons.gamepad), label: 'Players',),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: 'My Team'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.people), label: 'Fantacoaches'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.settings), label: 'Impostazioni')
+            BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Fantacoaches'),
+            BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings')
           ],
         ),
         body: getPageList(context)[_selectedIndex]);
@@ -107,18 +102,16 @@ abstract class LoggedPageState extends State<LoggedPage> {
       "Players",
       "${fantacoach.firstName} ${fantacoach.lastName}'s team",
       "Fantacoach",
-      "Impostazioni"
+      "Settings"
     ];
   }
 
   List<Widget> getPageList(BuildContext mContext) {
     return [
       content(context),
-      const MyTeamV2Page(),
+      TeamPage(coachId: fantacoach.id,),
       const FantaCoachPage(),
-      const Center(
-        child: Text('Impostazioni'),
-      )
+      const Center(child: Text('Settings'),)
     ];
   }
 }
