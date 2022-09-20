@@ -64,7 +64,11 @@ class MyTeamPageState extends LoggedPageState {
                         setState(() => fantaTeam.addPlayer(p));
                       }))
                   .toList())
-          : Row(),
+          : Container(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
     );
   }
 
@@ -119,6 +123,9 @@ class MyTeamPageState extends LoggedPageState {
                     search = newValue;
                   });
                 }),
+                const SizedBox(
+                  width: 10.0,
+                ),
                 buildAlertDialogFilter(
                     context,
                     "Positions",
@@ -184,12 +191,30 @@ ListTile playerTile(NbaPlayer p, String buttonText, Function() onPressed) {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Expanded(flex: 20, child: Text(p.firstName)),
-          Expanded(flex: 30, child: Text(p.lastName)),
-          Expanded(flex: 22, child: Center(child: Text(p.pos))),
           Expanded(
-              flex: 10,
-              child: BasicStyledButton(text: buttonText, onPressed: onPressed)),
+              flex: 20,
+              child: Text(
+                p.firstName,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              )),
+          Expanded(
+              flex: 30,
+              child: Text(
+                p.lastName,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              )),
+          Expanded(flex: 22, child: Center(child: Text(p.pos))),
+          Container(
+              decoration: BoxDecoration(
+                  color: Colors.blueAccent,
+                  borderRadius: BorderRadius.circular(30)),
+              child: IconButton(
+                icon: Icon(
+                  Icons.add,
+                  color: Colors.white,
+                ),
+                onPressed: onPressed,
+              ))
         ],
       ),
     ),

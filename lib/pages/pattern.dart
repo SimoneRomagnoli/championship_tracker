@@ -26,20 +26,20 @@ abstract class DefaultPageState extends State<DefaultPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(widget.title)),
+        //appBar: AppBar(title: Text(widget.title)),
         body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Center(
-                child: Padding(
-                  padding: defaultPadding,
-                  child: content(context),
-                ),
-              ),
-            )
-          ],
-        ));
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Center(
+            child: Padding(
+              padding: defaultPadding,
+              child: content(context),
+            ),
+          ),
+        )
+      ],
+    ));
   }
 }
 
@@ -74,7 +74,14 @@ abstract class LoggedPageState extends State<LoggedPage> {
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
+          backgroundColor: Colors.blue,
+          selectedItemColor: Colors.blue,
+          unselectedItemColor: Colors.blueGrey,
           items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.gamepad),
+              label: 'Players',
+            ),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: 'My Team'),
             BottomNavigationBarItem(
                 icon: Icon(Icons.people), label: 'Fantacoaches'),
@@ -93,6 +100,7 @@ abstract class LoggedPageState extends State<LoggedPage> {
 
   List<String> getPageTitle() {
     return [
+      "Players",
       "${fantacoach.firstName} ${fantacoach.lastName}'s team",
       "Fantacoach",
       "Impostazioni"
@@ -101,6 +109,7 @@ abstract class LoggedPageState extends State<LoggedPage> {
 
   List<Widget> getPageList(BuildContext mContext) {
     return [
+      content(context),
       MyTeamV2Page(),
       FantaCoachPage(),
       Center(

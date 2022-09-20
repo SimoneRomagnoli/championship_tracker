@@ -45,7 +45,11 @@ Widget buildSearchFilter(Function(String) onChanged) {
       padding: defaultPadding,
       child: TextField(
         decoration: const InputDecoration(
-            border: OutlineInputBorder(), hintText: "Search"),
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(40)),
+                borderSide: BorderSide(color: Colors.blueAccent, width: 3)),
+            hintText: "Search",
+            prefixIcon: Icon(Icons.people_alt_outlined)),
         onChanged: onChanged,
       ),
     ),
@@ -54,30 +58,67 @@ Widget buildSearchFilter(Function(String) onChanged) {
 
 Widget buildAlertDialogFilter(
     BuildContext context, String title, int flex, Widget content) {
-  return Expanded(
-      flex: flex,
-      child: BasicStyledButton(
-        text: title,
-        onPressed: () {
-          showDialog(
-              context: context,
-              builder: (context) => Wrap(
-                    children: [
-                      AlertDialog(
-                        title: Text(title),
-                        content: Container(
-                            decoration: defaultContainerDecoration,
-                            padding: EdgeInsets.zero,
-                            child: content),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: const Text('Go Back'),
-                          ),
-                        ],
-                      )
-                    ],
-                  ));
-        },
-      ));
+  return title == "Positions"
+      ? GestureDetector(
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: Colors.blueAccent,
+            ),
+            height: 40,
+            width: 40,
+            child: Center(
+              child: Image.asset(
+                'assets/player.png',
+                height: 30,
+                width: 30,
+              ),
+            ),
+          ),
+          onTap: () {
+            myShowDialog(context, title, content);
+          },
+        )
+      : GestureDetector(
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: Colors.blueAccent,
+            ),
+            height: 40,
+            width: 40,
+            child: Center(
+              child: Image.asset(
+                'assets/teams.png',
+                height: 30,
+                width: 30,
+              ),
+            ),
+          ),
+          onTap: () {
+            myShowDialog(context, title, content);
+          },
+        );
+}
+
+void myShowDialog(BuildContext context, String title, Widget content) {
+  showDialog(
+      context: context,
+      builder: (context) => Wrap(
+            children: [
+              AlertDialog(
+                title: Text(title),
+                content: Container(
+                    decoration: defaultContainerDecoration,
+                    padding: EdgeInsets.zero,
+                    child: content),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Go Back'),
+                  ),
+                ],
+              )
+            ],
+          ));
 }
