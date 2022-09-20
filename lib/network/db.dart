@@ -4,8 +4,8 @@ import 'package:championship_tracker/utils/monads.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:http/http.dart' as http;
 import '../utils/tuples.dart';
-import 'fanta.dart';
-import 'nba.dart';
+import '../models/fanta.dart';
+import '../models/nba.dart';
 
 Future<Db> openDatabase() async {
   var db = await Db.create(
@@ -22,6 +22,11 @@ Future<List<FantaCoach>> getFantaCoaches() async {
   return (coaches!["fantacoaches"] as List)
       .map((e) => FantaCoach.fromJson(e))
       .toList();
+}
+
+Future<FantaCoach> getFantaCoach(String coachId) async {
+  List<FantaCoach> coaches = await getFantaCoaches();
+  return coaches.firstWhere((fc) => fc.id == coachId);
 }
 
 Future<List<NbaTeam>> getNbaTeams() async {

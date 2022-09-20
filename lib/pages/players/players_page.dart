@@ -4,9 +4,9 @@ import 'package:championship_tracker/style/style.dart';
 import 'package:championship_tracker/utils/tuples.dart';
 import 'package:flutter/material.dart';
 
-import '../../api/db.dart';
-import '../../api/fanta.dart';
-import '../../api/nba.dart';
+import '../../network/db.dart';
+import '../../models/fanta.dart';
+import '../../models/nba.dart';
 
 BoxDecoration listTileDecoration = const BoxDecoration();
 

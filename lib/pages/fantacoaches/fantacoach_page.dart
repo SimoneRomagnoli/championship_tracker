@@ -1,8 +1,8 @@
-import 'package:championship_tracker/api/db.dart';
+import 'package:championship_tracker/network/db.dart';
 import 'package:championship_tracker/utils/monads.dart';
 import 'package:flutter/material.dart';
 
-import '../../api/fanta.dart';
+import '../../models/fanta.dart';
 
 class FantaCoachPage extends StatefulWidget {
   const FantaCoachPage({Key? key}) : super(key: key);

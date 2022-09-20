@@ -1,10 +1,10 @@
-import 'package:championship_tracker/api/db.dart';
+import 'package:championship_tracker/network/db.dart';
 import 'package:championship_tracker/pages/fantacoaches/fantacoach_page.dart';
 import 'package:championship_tracker/pages/team/team.dart';
 import 'package:championship_tracker/style/style.dart';
 import 'package:flutter/material.dart';
 
-import '../api/fanta.dart';
+import '../models/fanta.dart';
 
 abstract class DefaultPage extends StatefulWidget {
   const DefaultPage({Key? key, required this.title}) : super(key: key);
