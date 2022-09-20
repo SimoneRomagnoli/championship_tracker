@@ -1,3 +1,5 @@
+import 'package:championship_tracker/network/db.dart';
+import 'package:championship_tracker/network/manager.dart';
 import 'package:championship_tracker/pages/players/players_page.dart';
 import 'package:championship_tracker/style/style.dart';
 import 'package:flutter/material.dart';
@@ -40,11 +42,20 @@ class LoginPageState extends DefaultPageState {
             child: BasicStyledButton(
               text: "Login",
               onPressed: () {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                        builder: ((context) => PlayersPage(coachId: username))),
-                    (route) => false);
+                checkAccess(username).then((res) {
+                  if (res) {
+                    NetworkManager.init(username);
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: ((context) => PlayersPage(coachId: username,))),
+                            (route) => false);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Invalid username"))
+                    );
+                  }
+                });
               },
             ),
           )

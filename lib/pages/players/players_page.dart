@@ -4,9 +4,9 @@ import 'package:championship_tracker/style/style.dart';
 import 'package:championship_tracker/utils/tuples.dart';
 import 'package:flutter/material.dart';
 
-import '../../network/db.dart';
 import '../../models/fanta.dart';
 import '../../models/nba.dart';
+import '../../network/manager.dart';
 
 BoxDecoration listTileDecoration = const BoxDecoration();
 
@@ -19,7 +19,7 @@ class PlayersPage extends LoggedPage {
 
 class PlayersPageState extends LoggedPageState {
   PlayersPageState() {
-    getNbaTeams().then((res) {
+    NetworkManager.getNbaTeams().then((res) {
       setState(() {
         teams = {
           for (var t in res) t.tricode: Tuple2(first: t.teamId, second: false)
@@ -48,7 +48,7 @@ class PlayersPageState extends LoggedPageState {
       child: snapshot.hasData
           ? ListView(
               children: applyFilters(snapshot.data!.first, positions, teams, search)
-                  .map((p) => playerTile(p, snapshot.data!.third.firstWhere((t) => t.teamId == p.teamId), snapshot.data!.second, Icons.add, () => addToTeam(widget.coachId, p) )).toList()
+                  .map((p) => playerTile(p, snapshot.data!.third.firstWhere((t) => t.teamId == p.teamId), snapshot.data!.second, Icons.add, () => NetworkManager.addToTeam(widget.coachId, p) )).toList()
             )
           : const Center(child: CircularProgressIndicator(),),
     );
@@ -127,7 +127,7 @@ class PlayersPageState extends LoggedPageState {
           ),
           Expanded(
             child: FutureBuilder(
-              future: getPlayersPageInfo(),
+              future: NetworkManager.getPlayersPageInfo(),
               builder: buildPlayersList,
             ),
           ),

@@ -1,11 +1,13 @@
-import 'package:championship_tracker/network/db.dart';
 import 'package:championship_tracker/utils/monads.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/fanta.dart';
+import '../../network/manager.dart';
 
 class FantaCoachPage extends StatefulWidget {
-  const FantaCoachPage({Key? key}) : super(key: key);
+  const FantaCoachPage({Key? key, required this.coachId}) : super(key: key);
+
+  final String coachId;
 
   @override
   State<FantaCoachPage> createState() => _FantaCoachPageState();
@@ -21,7 +23,7 @@ class _FantaCoachPageState extends State<FantaCoachPage> {
       children: [
         Expanded(
           child: FutureBuilder(
-            future: getFantaCoaches(),
+            future: NetworkManager.getFantaCoaches(),
             builder: coachesColumn,
           ),
         ),

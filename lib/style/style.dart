@@ -5,7 +5,7 @@ const TextStyle titlesTextStyle = TextStyle(fontSize: defaultFontSize * 1.5, fon
 const TextStyle defaultButtonTextStyle = TextStyle(fontSize: defaultFontSize, color: Colors.white);
 const EdgeInsetsGeometry defaultPadding = EdgeInsets.all(5.0);
 
-BoxDecoration defaultContainerDecoration = BoxDecoration();
+BoxDecoration defaultContainerDecoration = const BoxDecoration();
 
 class BasicStyledButton extends ClipRRect {
   BasicStyledButton(

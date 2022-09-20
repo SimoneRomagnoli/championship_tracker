@@ -1,4 +1,3 @@
-import 'package:championship_tracker/network/db.dart';
 import 'package:championship_tracker/pages/players/players_page.dart';
 import 'package:championship_tracker/style/style.dart';
 import 'package:championship_tracker/utils/monads.dart';
@@ -6,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../models/fanta.dart';
 import '../../models/nba.dart';
+import '../../network/manager.dart';
 import '../../utils/tuples.dart';
 
 class TeamPage extends StatefulWidget {
@@ -18,7 +18,6 @@ class TeamPage extends StatefulWidget {
 }
 
 class TeamPageState extends State<TeamPage> {
-
   int spendingCredits = 0;
 
   @override
@@ -29,7 +28,7 @@ class TeamPageState extends State<TeamPage> {
             padding: defaultPadding,
             decoration: defaultContainerDecoration,
             child: FutureBuilder(
-              future: getFantaCoach(widget.coachId),
+              future: NetworkManager.getFantaCoach(widget.coachId),
               builder: buildHeader,
             ),
 
@@ -40,7 +39,7 @@ class TeamPageState extends State<TeamPage> {
             padding: defaultPadding,
             decoration: defaultContainerDecoration,
             child: FutureBuilder(
-              future: getTeamPageInfo(widget.coachId),
+              future: NetworkManager.getTeamPageInfo(widget.coachId),
               builder: buildFantaTeam,
             ),
           )
@@ -101,7 +100,7 @@ class TeamPageState extends State<TeamPage> {
                       Icons.money_off,
                       color: Colors.white,
                     ),
-                    onPressed: () {},
+                    onPressed: () => NetworkManager.spendCredits(widget.coachId, spendingCredits),
                   )
                 ),
               ]
@@ -118,10 +117,10 @@ class TeamPageState extends State<TeamPage> {
       decoration: defaultContainerDecoration,
       child: ListView(
         children: team.players
-              .map((p) => playerTile(p, teams.firstWhere((t) => t.teamId == p.teamId), [], Icons.remove, () => removeFromTeam(widget.coachId, p)))
+              .map((p) => playerTile(p, teams.firstWhere((t) => t.teamId == p.teamId), [], Icons.remove, () => NetworkManager.removeFromTeam(widget.coachId, p)))
               .toList()
             .also((it) {
-              if (snapshot.data!.first.headCoach != null) it.insert(0, playerTile(team.headCoach!, teams.firstWhere((t) => t.teamId == team.headCoach!.teamId), [], Icons.remove, () => removeFromTeam(widget.coachId, team.headCoach!)));
+              if (snapshot.data!.first.headCoach != null) it.insert(0, playerTile(team.headCoach!, teams.firstWhere((t) => t.teamId == team.headCoach!.teamId), [], Icons.remove, () => NetworkManager.removeFromTeam(widget.coachId, team.headCoach!)));
             }),
       ),
     )
