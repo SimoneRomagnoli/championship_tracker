@@ -78,9 +78,6 @@ class PlayersPageState extends LoggedPageState {
                     search = newValue;
                   });
                 }),
-                const SizedBox(
-                  width: 10.0,
-                ),
                 buildAlertDialogFilter(
                     context,
                     "Positions",
@@ -97,9 +94,8 @@ class PlayersPageState extends LoggedPageState {
                                   });
                                   Navigator.pop(context);
                                 }))
-                            .toList())),
-                const SizedBox(
-                  width: 10.0,
+                            .toList()
+                    )
                 ),
                 buildAlertDialogFilter(
                     context,
@@ -122,7 +118,10 @@ class PlayersPageState extends LoggedPageState {
                                       });
                                       Navigator.pop(context);
                                     }))
-                                .toList())))
+                                .toList()
+                        )
+                    )
+                )
               ],
             ),
           ),

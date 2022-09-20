@@ -123,6 +123,8 @@ void myShowDialog(BuildContext context, String title, Widget content) {
                 content: Container(
                     decoration: defaultContainerDecoration,
                     padding: EdgeInsets.zero,
+                    height: MediaQuery.of(context).size.height / 1.5,
+                    width: MediaQuery.of(context).size.width / 1.2,
                     child: content),
                 actions: <Widget>[
                   TextButton(
