@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:championship_tracker/api/db.dart';
 import 'package:championship_tracker/pages_v2/fantacoach_page.dart';
 import 'package:championship_tracker/pages_v2/my_team_page.dart';
@@ -84,7 +82,6 @@ abstract class LoggedPageState extends State<LoggedPage> {
               icon: Icon(Icons.gamepad),
               label: 'Players',
             ),
-
             BottomNavigationBarItem(icon: Icon(Icons.person), label: 'My Team'),
             BottomNavigationBarItem(
                 icon: Icon(Icons.people), label: 'Fantacoaches'),
