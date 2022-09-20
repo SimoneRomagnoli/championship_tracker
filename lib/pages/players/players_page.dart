@@ -10,15 +10,15 @@ import '../../api/nba.dart';
 
 BoxDecoration listTileDecoration = const BoxDecoration();
 
-class MyTeamPage extends LoggedPage {
-  const MyTeamPage({required coachId, super.key}) : super(coachId: coachId);
+class PlayersPage extends LoggedPage {
+  const PlayersPage({required coachId, super.key}) : super(coachId: coachId);
 
   @override
-  LoggedPageState createState() => MyTeamPageState();
+  LoggedPageState createState() => PlayersPageState();
 }
 
-class MyTeamPageState extends LoggedPageState {
-  MyTeamPageState() {
+class PlayersPageState extends LoggedPageState {
+  PlayersPageState() {
     getNbaTeams().then((res) {
       setState(() {
         teams = {

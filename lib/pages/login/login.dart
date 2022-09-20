@@ -43,7 +43,7 @@ class LoginPageState extends DefaultPageState {
                 Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
-                        builder: ((context) => MyTeamPage(coachId: username))),
+                        builder: ((context) => PlayersPage(coachId: username))),
                     (route) => false);
               },
             ),

@@ -23,7 +23,7 @@ Widget topNavbar(BuildContext context, FantaCoach fantaCoach) {
         BasicStyledButton(
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return MyTeamPage(coachId: fantaCoach.id,);
+                return PlayersPage(coachId: fantaCoach.id,);
               }));
             },
             text: "MyTeam"
