@@ -28,24 +28,30 @@ class NbaTeam {
   }
 }
 
-class NbaPlayer {
+class NbaPerson {
   late String personId;
   late String firstName;
   late String lastName;
-  late int jersey;
   late String pos;
   late String teamId;
 
-  NbaPlayer(this.personId, this.firstName, this.lastName, this.jersey, this.pos, this. teamId);
+  NbaPerson(this.personId, this.firstName, this.lastName, this.pos, this.teamId);
 
-  NbaPlayer.fromJson(Map<String, dynamic> map) {
-    personId = map["personId"];
-    firstName = map["firstName"];
-    lastName = map["lastName"];
-    jersey = map["jersey"] is int ? map["jersey"] : (map["jersey"] != "" ? int.parse(map["jersey"]) : 0);
-    pos = map["pos"];
-    teamId = map["teamId"];
-  }
+}
+
+class NbaPlayer extends NbaPerson {
+  late int jersey;
+
+  NbaPlayer(super.personId, super.firstName, super.lastName, this.jersey, super.pos, super.teamId);
+
+  NbaPlayer.fromJson(Map<String, dynamic> map) : this(
+    map["personId"],
+    map["firstName"],
+    map["lastName"],
+    map["jersey"] is int ? map["jersey"] : (map["jersey"] != "" ? int.parse(map["jersey"]) : 0),
+    map["pos"],
+    map["teamId"],
+  );
 
   Map<String, dynamic> toMap() {
     return {
@@ -59,14 +65,11 @@ class NbaPlayer {
   }
 }
 
-class NbaHeadCoach {
-  late String personId;
-  late String firstName;
-  late String lastName;
-  late String teamId;
+class NbaHeadCoach extends NbaPerson {
   late String teamTricode;
 
-  NbaHeadCoach(this.personId, this.firstName, this.lastName, this.teamId, this.teamTricode);
+  NbaHeadCoach(String personId, String firstName, String lastName, String teamId, this.teamTricode)
+      : super(personId, firstName, lastName, "HC", teamId);
 
   NbaHeadCoach.empty() : this("", "", "", "", "");
 
@@ -77,4 +80,14 @@ class NbaHeadCoach {
     map["teamId"],
     map["teamSitesOnly"]["teamTricode"]
   );
+
+  Map<String, dynamic> toMap() {
+    return {
+      "personId" : personId,
+      "firstName" : firstName,
+      "lastName" : lastName,
+      "teamId" : teamId,
+      "teamSitesOnly" : { "teamTricode" : teamTricode },
+    };
+  }
 }

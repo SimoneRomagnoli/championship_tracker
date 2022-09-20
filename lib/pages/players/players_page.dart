@@ -38,17 +38,17 @@ class PlayersPageState extends LoggedPageState {
   };
   int showingIndex = 0;
 
-  Map<String, bool> positions = {"G": false, "F": false, "C": false};
+  Map<String, bool> positions = {"G": false, "F": false, "C": false, "HC": false};
   Map<String, Tuple2<String, bool>> teams = {};
   String search = "";
 
   Widget buildPlayersList(
-      BuildContext context, AsyncSnapshot<List<NbaPlayer>> snapshot) {
+      BuildContext context, AsyncSnapshot<Tuple3<List<NbaPerson>, List<FantaTeam>, List<NbaTeam>>> snapshot) {
     return Container(
       child: snapshot.hasData
           ? ListView(
-              children: applyFilters(snapshot.data!, positions, teams, search)
-                  .map((p) => playerTile(p, Icons.add, () => addPlayer(widget.coachId, p) )).toList()
+              children: applyFilters(snapshot.data!.first, positions, teams, search)
+                  .map((p) => playerTile(p, snapshot.data!.third.firstWhere((t) => t.teamId == p.teamId), snapshot.data!.second, Icons.add, () => addToTeam(widget.coachId, p) )).toList()
             )
           : const Center(child: CircularProgressIndicator(),),
     );
@@ -78,9 +78,6 @@ class PlayersPageState extends LoggedPageState {
                     search = newValue;
                   });
                 }),
-                const SizedBox(
-                  width: 10.0,
-                ),
                 buildAlertDialogFilter(
                     context,
                     "Positions",
@@ -97,9 +94,8 @@ class PlayersPageState extends LoggedPageState {
                                   });
                                   Navigator.pop(context);
                                 }))
-                            .toList())),
-                const SizedBox(
-                  width: 10.0,
+                            .toList()
+                    )
                 ),
                 buildAlertDialogFilter(
                     context,
@@ -122,13 +118,16 @@ class PlayersPageState extends LoggedPageState {
                                       });
                                       Navigator.pop(context);
                                     }))
-                                .toList())))
+                                .toList()
+                        )
+                    )
+                )
               ],
             ),
           ),
           Expanded(
             child: FutureBuilder(
-              future: getNbaPlayers(),
+              future: getPlayersPageInfo(),
               builder: buildPlayersList,
             ),
           ),
@@ -136,7 +135,7 @@ class PlayersPageState extends LoggedPageState {
       );
 }
 
-Widget playerTile(NbaPlayer p, IconData icon, Function() onPressed) {
+Widget playerTile(NbaPerson p, NbaTeam team, List<FantaTeam> teams, IconData icon, Function() onPressed) {
   return Column(
     children: [
       Container(
@@ -157,61 +156,19 @@ Widget playerTile(NbaPlayer p, IconData icon, Function() onPressed) {
                   p.lastName,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 )),
-            Expanded(flex: 22, child: Center(child: Text(p.pos))),
+            Expanded(flex: 10, child: Center(child: Text(p.pos))),
+            Expanded(flex: 10, child: Center(child: Text(team.tricode))),
+            Expanded(flex: 20, child: Center(child: Text(teams.any((t) => t.has(p)) ? teams.firstWhere((t) => t.has(p)).coachId : ""))),
             Container(
                 decoration: BoxDecoration(
-                    color: Colors.blueAccent,
+                    color: teams.any((t) => t.has(p)) ? Colors.black12 : Colors.blueAccent,
                     borderRadius: BorderRadius.circular(30)),
                 child: IconButton(
                   icon: Icon(
                     icon,
                     color: Colors.white,
                   ),
-                  onPressed: onPressed,
-                ))
-          ],
-        ),
-      ),
-      const Divider(
-        color: Colors.blueGrey,
-        height: 3,
-      )
-    ],
-  );
-}
-
-Widget headCoachTile(NbaHeadCoach hc, IconData icon, Function() onPressed) {
-  return Column(
-    children: [
-      Container(
-        padding: const EdgeInsets.all(8),
-        decoration: listTileDecoration,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Expanded(
-                flex: 20,
-                child: Text(
-                  hc.firstName,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                )),
-            Expanded(
-                flex: 30,
-                child: Text(
-                  hc.lastName,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                )),
-            const Expanded(flex: 22, child: Center(child: Text("HC"))),
-            Container(
-                decoration: BoxDecoration(
-                    color: Colors.blueAccent,
-                    borderRadius: BorderRadius.circular(30)),
-                child: IconButton(
-                  icon: Icon(
-                    icon,
-                    color: Colors.white,
-                  ),
-                  onPressed: onPressed,
+                  onPressed: teams.any((t) => t.has(p)) ? null : onPressed,
                 ))
           ],
         ),
