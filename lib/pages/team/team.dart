@@ -32,7 +32,7 @@ class TeamPageState extends State<TeamPage> {
         children: snapshot.data!.players
               .map((p) => playerTile(p, Icons.remove, () => removePlayer(widget.coachId, p)))
               .toList()
-            .also((it) { if (snapshot.data!.headCoach != null) it.insert(0, headCoachTile(snapshot.data!.headCoach!, Icons.remove, () => null)); }),
+            .also((it) { if (snapshot.data!.headCoach != null) it.insert(0, playerTile(snapshot.data!.headCoach!, Icons.remove, () => null)); }),
       ),
     )
     : const Center(child: CircularProgressIndicator());

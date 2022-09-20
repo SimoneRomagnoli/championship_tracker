@@ -4,8 +4,8 @@ import '../../api/nba.dart';
 import '../../style/style.dart';
 import '../../utils/tuples.dart';
 
-List<NbaPlayer> applyFilters(
-    List<NbaPlayer> players,
+List<NbaPerson> applyFilters(
+    List<NbaPerson> players,
     Map<String, bool> positions,
     Map<String, Tuple2<String, bool>> teams,
     String search) {
@@ -17,24 +17,24 @@ List<NbaPlayer> applyFilters(
       .toList();
 }
 
-bool filterByName(NbaPlayer player, String search) {
+bool filterByName(NbaPerson p, String search) {
   return search == "" ||
-      player.firstName.contains(RegExp(search, caseSensitive: false)) ||
-      player.lastName.contains(RegExp(search, caseSensitive: false));
+      p.firstName.contains(RegExp(search, caseSensitive: false)) ||
+      p.lastName.contains(RegExp(search, caseSensitive: false));
 }
 
-bool filterByPosition(NbaPlayer player, Map<String, bool> positions) {
+bool filterByPosition(NbaPerson p, Map<String, bool> positions) {
   return !positions.values.reduce((acc, e) => acc || e) ||
-      player.pos.contains(RegExp(positions.keys
+      p.pos.contains(RegExp(positions.keys
           .where((k) => positions[k]!)
           .reduce((acc, s) => "$acc|$s")));
 }
 
-bool filterByTeam(NbaPlayer player, Map<String, Tuple2<String, bool>> teams) {
+bool filterByTeam(NbaPerson p, Map<String, Tuple2<String, bool>> teams) {
   return !teams.values
           .reduce((acc, e) => Tuple2(first: "", second: acc.second || e.second))
           .second ||
-      teams[teams.keys.firstWhere((k) => teams[k]!.first == player.teamId)]!
+      teams[teams.keys.firstWhere((k) => teams[k]!.first == p.teamId)]!
           .second;
 }
 

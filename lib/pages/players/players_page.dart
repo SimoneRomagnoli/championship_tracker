@@ -38,17 +38,17 @@ class PlayersPageState extends LoggedPageState {
   };
   int showingIndex = 0;
 
-  Map<String, bool> positions = {"G": false, "F": false, "C": false};
+  Map<String, bool> positions = {"G": false, "F": false, "C": false, "HC": false};
   Map<String, Tuple2<String, bool>> teams = {};
   String search = "";
 
   Widget buildPlayersList(
-      BuildContext context, AsyncSnapshot<List<NbaPlayer>> snapshot) {
+      BuildContext context, AsyncSnapshot<List<NbaPerson>> snapshot) {
     return Container(
       child: snapshot.hasData
           ? ListView(
               children: applyFilters(snapshot.data!, positions, teams, search)
-                  .map((p) => playerTile(p, Icons.add, () => addPlayer(widget.coachId, p) )).toList()
+                  .map((p) => playerTile(p, Icons.add, () => addToTeam(widget.coachId, p) )).toList()
             )
           : const Center(child: CircularProgressIndicator(),),
     );
@@ -128,7 +128,7 @@ class PlayersPageState extends LoggedPageState {
           ),
           Expanded(
             child: FutureBuilder(
-              future: getNbaPlayers(),
+              future: getNbaPlayersAndHeadCoaches(),
               builder: buildPlayersList,
             ),
           ),
@@ -136,7 +136,7 @@ class PlayersPageState extends LoggedPageState {
       );
 }
 
-Widget playerTile(NbaPlayer p, IconData icon, Function() onPressed) {
+Widget playerTile(NbaPerson p, IconData icon, Function() onPressed) {
   return Column(
     children: [
       Container(
@@ -158,50 +158,6 @@ Widget playerTile(NbaPlayer p, IconData icon, Function() onPressed) {
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 )),
             Expanded(flex: 22, child: Center(child: Text(p.pos))),
-            Container(
-                decoration: BoxDecoration(
-                    color: Colors.blueAccent,
-                    borderRadius: BorderRadius.circular(30)),
-                child: IconButton(
-                  icon: Icon(
-                    icon,
-                    color: Colors.white,
-                  ),
-                  onPressed: onPressed,
-                ))
-          ],
-        ),
-      ),
-      const Divider(
-        color: Colors.blueGrey,
-        height: 3,
-      )
-    ],
-  );
-}
-
-Widget headCoachTile(NbaHeadCoach hc, IconData icon, Function() onPressed) {
-  return Column(
-    children: [
-      Container(
-        padding: const EdgeInsets.all(8),
-        decoration: listTileDecoration,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Expanded(
-                flex: 20,
-                child: Text(
-                  hc.firstName,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                )),
-            Expanded(
-                flex: 30,
-                child: Text(
-                  hc.lastName,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                )),
-            const Expanded(flex: 22, child: Center(child: Text("HC"))),
             Container(
                 decoration: BoxDecoration(
                     color: Colors.blueAccent,

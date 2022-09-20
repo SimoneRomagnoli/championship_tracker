@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:championship_tracker/utils/monads.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:http/http.dart' as http;
+import '../utils/tuples.dart';
 import 'fanta.dart';
 import 'nba.dart';
 
@@ -47,11 +49,28 @@ Future<List<NbaHeadCoach>> getNbaHeadCoaches() async {
   return coaches.map((json) => NbaHeadCoach.fromJson(json)).toList();
 }
 
+Future<List<NbaPerson>> getNbaPlayersAndHeadCoaches() async {
+  List<NbaPlayer> players = await getNbaPlayers();
+  List<NbaHeadCoach> coaches = await getNbaHeadCoaches();
+  List<NbaPerson> all = [];
+  return all.also((it) => it.addAll(players)).also((it) => it.addAll(coaches)).also((it) => it.sort(sortNbaPlayers));
+}
+
 Future<FantaTeam> getFantaTeam(String coachId) async {
   var db = await openDatabase();
   var teams = await db.collection("FantaTeams").modernFindOne(selector: where.eq("name", "dunkettola"));
   var team = (teams!["fantateams"] as List).firstWhere((p) => p["coachId"] == coachId);
-  return FantaTeam.fromJson(team);
+  return FantaTeam.fromJson(team).also((t) => t.players.sort(sortNbaPlayers));
+}
+
+void addToTeam(String coachId, NbaPerson p) {
+  if (p is NbaPlayer) addPlayer(coachId, p);
+  if (p is NbaHeadCoach) addHeadCoach(coachId, p);
+}
+
+void removeFromTeam(String coachId, NbaPerson p) {
+  if (p is NbaPlayer) removePlayer(coachId, p);
+  if (p is NbaHeadCoach) removeHeadCoach(coachId, p);
 }
 
 void addPlayer(String coachId, NbaPlayer player) async {
@@ -68,4 +87,24 @@ void removePlayer(String coachId, NbaPlayer player) async {
       where.eq("fantateams.coachId", coachId),
       modify.pull("fantateams.\$.players", { "personId" : player.personId })
   );
+}
+
+void addHeadCoach(String coachId, NbaHeadCoach hc) async {
+  var db = await openDatabase();
+  db.collection("FantaTeams").modernUpdate(
+      where.eq("fantateams.coachId", coachId),
+      modify.set("fantateams.\$.headCoach", hc.toMap())
+  );
+}
+
+void removeHeadCoach(String coachId, NbaHeadCoach hc) async {
+  var db = await openDatabase();
+  db.collection("FantaTeams").modernUpdate(
+      where.eq("fantateams.coachId", coachId),
+      modify.set("fantateams.\$.headCoach", null)
+  );
+}
+
+int sortNbaPlayers(NbaPerson a, NbaPerson b) {
+  return a.lastName.compareTo(b.lastName);
 }
