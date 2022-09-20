@@ -8,16 +8,7 @@ import '../../api/db.dart';
 import '../../api/fanta.dart';
 import '../../api/nba.dart';
 
-BoxDecoration listTileDecoration = const BoxDecoration(
-  border: Border(
-    bottom: BorderSide(
-      color: Colors.black12,
-    ),
-    top: BorderSide(
-      color: Colors.black12,
-    ),
-  ),
-);
+BoxDecoration listTileDecoration = const BoxDecoration();
 
 class MyTeamPage extends LoggedPage {
   const MyTeamPage({required coachId, super.key}) : super(coachId: coachId);
@@ -54,8 +45,6 @@ class MyTeamPageState extends LoggedPageState {
   Widget buildPlayersList(
       BuildContext context, AsyncSnapshot<List<NbaPlayer>> snapshot) {
     return Container(
-      padding: EdgeInsets.zero,
-      decoration: defaultContainerDecoration,
       child: snapshot.hasData
           ? ListView(
               children: applyFilters(snapshot.data!, positions, teams, search)
@@ -70,9 +59,17 @@ class MyTeamPageState extends LoggedPageState {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Container(
-            decoration: defaultContainerDecoration,
+            decoration: const BoxDecoration(
+              color: Colors.blue,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey,
+                  offset: Offset(0.0, 1.0), //(x,y)
+                  blurRadius: 6.0,
+                ),
+              ],
+            ),
             padding: defaultPadding,
-            margin: const EdgeInsets.only(top: 10.0, bottom: 10.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -139,43 +136,47 @@ class MyTeamPageState extends LoggedPageState {
       );
 }
 
-ListTile playerTile(NbaPlayer p, String buttonText, Function() onPressed) {
-  return ListTile(
-    minVerticalPadding: -1.0,
-    contentPadding: EdgeInsets.zero,
-    title: Container(
-      padding: defaultPadding,
-      decoration: listTileDecoration,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Expanded(
-              flex: 20,
-              child: Text(
-                p.firstName,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              )),
-          Expanded(
-              flex: 30,
-              child: Text(
-                p.lastName,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              )),
-          Expanded(flex: 22, child: Center(child: Text(p.pos))),
-          Container(
-              decoration: BoxDecoration(
-                  color: Colors.blueAccent,
-                  borderRadius: BorderRadius.circular(30)),
-              child: IconButton(
-                icon: const Icon(
-                  Icons.add,
-                  color: Colors.white,
-                ),
-                onPressed: onPressed,
-              ))
-        ],
+Widget playerTile(NbaPlayer p, String buttonText, Function() onPressed) {
+  return Column(
+    children: [
+      Container(
+        padding: const EdgeInsets.all(8),
+        decoration: listTileDecoration,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Expanded(
+                flex: 20,
+                child: Text(
+                  p.firstName,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                )),
+            Expanded(
+                flex: 30,
+                child: Text(
+                  p.lastName,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                )),
+            Expanded(flex: 22, child: Center(child: Text(p.pos))),
+            Container(
+                decoration: BoxDecoration(
+                    color: Colors.blueAccent,
+                    borderRadius: BorderRadius.circular(30)),
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+                  onPressed: onPressed,
+                ))
+          ],
+        ),
       ),
-    ),
+      const Divider(
+        color: Colors.blueGrey,
+        height: 3,
+      )
+    ],
   );
 }
 
