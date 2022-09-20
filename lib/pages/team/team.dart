@@ -5,6 +5,8 @@ import 'package:championship_tracker/utils/monads.dart';
 import 'package:flutter/material.dart';
 
 import '../../api/fanta.dart';
+import '../../api/nba.dart';
+import '../../utils/tuples.dart';
 
 class TeamPage extends StatefulWidget {
   const TeamPage({required this.coachId, super.key});
@@ -19,20 +21,24 @@ class TeamPageState extends State<TeamPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: getFantaTeam(widget.coachId),
+      future: getTeamPageInfo(widget.coachId),
       builder: buildFantaTeam,
     );
   }
 
-  Widget buildFantaTeam(BuildContext context, AsyncSnapshot<FantaTeam> snapshot) {
+  Widget buildFantaTeam(BuildContext context, AsyncSnapshot<Tuple2<FantaTeam, List<NbaTeam>>> snapshot) {
+    FantaTeam team = snapshot.hasData ? snapshot.data!.first : FantaTeam.empty();
+    List<NbaTeam> teams = snapshot.hasData ? snapshot.data!.second : [];
     return snapshot.hasData ? Container(
       padding: EdgeInsets.zero,
       decoration: defaultContainerDecoration,
       child: ListView(
-        children: snapshot.data!.players
-              .map((p) => playerTile(p, Icons.remove, () => removePlayer(widget.coachId, p)))
+        children: team.players
+              .map((p) => playerTile(p, teams.firstWhere((t) => t.teamId == p.teamId), [], Icons.remove, () => removeFromTeam(widget.coachId, p)))
               .toList()
-            .also((it) { if (snapshot.data!.headCoach != null) it.insert(0, playerTile(snapshot.data!.headCoach!, Icons.remove, () => null)); }),
+            .also((it) {
+              if (snapshot.data!.first.headCoach != null) it.insert(0, playerTile(team.headCoach!, teams.firstWhere((t) => t.teamId == team.headCoach!.teamId), [], Icons.remove, () => removeFromTeam(widget.coachId, team.headCoach!)));
+            }),
       ),
     )
     : const Center(child: CircularProgressIndicator());

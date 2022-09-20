@@ -44,6 +44,12 @@ class FantaTeam {
 
   FantaTeam.empty() : this("", "", null, []);
 
+  bool has(NbaPerson p) {
+    if (p is NbaHeadCoach) return headCoach != null && headCoach!.personId == p.personId;
+    if (p is NbaPlayer) return players.any((player) => player.personId == p.personId);
+    return false;
+  }
+
   void addPlayer(NbaPlayer p) {
     players.add(p);
   }

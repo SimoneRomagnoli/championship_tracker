@@ -43,12 +43,12 @@ class PlayersPageState extends LoggedPageState {
   String search = "";
 
   Widget buildPlayersList(
-      BuildContext context, AsyncSnapshot<List<NbaPerson>> snapshot) {
+      BuildContext context, AsyncSnapshot<Tuple3<List<NbaPerson>, List<FantaTeam>, List<NbaTeam>>> snapshot) {
     return Container(
       child: snapshot.hasData
           ? ListView(
-              children: applyFilters(snapshot.data!, positions, teams, search)
-                  .map((p) => playerTile(p, Icons.add, () => addToTeam(widget.coachId, p) )).toList()
+              children: applyFilters(snapshot.data!.first, positions, teams, search)
+                  .map((p) => playerTile(p, snapshot.data!.third.firstWhere((t) => t.teamId == p.teamId), snapshot.data!.second, Icons.add, () => addToTeam(widget.coachId, p) )).toList()
             )
           : const Center(child: CircularProgressIndicator(),),
     );
@@ -128,7 +128,7 @@ class PlayersPageState extends LoggedPageState {
           ),
           Expanded(
             child: FutureBuilder(
-              future: getNbaPlayersAndHeadCoaches(),
+              future: getPlayersPageInfo(),
               builder: buildPlayersList,
             ),
           ),
@@ -136,7 +136,7 @@ class PlayersPageState extends LoggedPageState {
       );
 }
 
-Widget playerTile(NbaPerson p, IconData icon, Function() onPressed) {
+Widget playerTile(NbaPerson p, NbaTeam team, List<FantaTeam> teams, IconData icon, Function() onPressed) {
   return Column(
     children: [
       Container(
@@ -157,17 +157,19 @@ Widget playerTile(NbaPerson p, IconData icon, Function() onPressed) {
                   p.lastName,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 )),
-            Expanded(flex: 22, child: Center(child: Text(p.pos))),
+            Expanded(flex: 10, child: Center(child: Text(p.pos))),
+            Expanded(flex: 10, child: Center(child: Text(team.tricode))),
+            Expanded(flex: 20, child: Center(child: Text(teams.any((t) => t.has(p)) ? teams.firstWhere((t) => t.has(p)).coachId : ""))),
             Container(
                 decoration: BoxDecoration(
-                    color: Colors.blueAccent,
+                    color: teams.any((t) => t.has(p)) ? Colors.black12 : Colors.blueAccent,
                     borderRadius: BorderRadius.circular(30)),
                 child: IconButton(
                   icon: Icon(
                     icon,
                     color: Colors.white,
                   ),
-                  onPressed: onPressed,
+                  onPressed: teams.any((t) => t.has(p)) ? null : onPressed,
                 ))
           ],
         ),

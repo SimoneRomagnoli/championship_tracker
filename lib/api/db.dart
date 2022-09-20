@@ -46,7 +46,7 @@ Future<List<NbaHeadCoach>> getNbaHeadCoaches() async {
   var url = Uri.https("data.nba.net", "/10s/prod/v1/2022/coaches.json");
   var res = await http.get(url);
   var coaches = jsonDecode(res.body)["league"]["standard"] as List;
-  return coaches.map((json) => NbaHeadCoach.fromJson(json)).toList();
+  return coaches.where((hc) => !hc["isAssistant"]).map((json) => NbaHeadCoach.fromJson(json)).toList();
 }
 
 Future<List<NbaPerson>> getNbaPlayersAndHeadCoaches() async {
@@ -56,11 +56,28 @@ Future<List<NbaPerson>> getNbaPlayersAndHeadCoaches() async {
   return all.also((it) => it.addAll(players)).also((it) => it.addAll(coaches)).also((it) => it.sort(sortNbaPlayers));
 }
 
-Future<FantaTeam> getFantaTeam(String coachId) async {
+Future<Tuple3<List<NbaPerson>, List<FantaTeam>, List<NbaTeam>>> getPlayersPageInfo() async {
+  List<NbaPerson> players = await getNbaPlayersAndHeadCoaches();
+  List<FantaTeam> fantateams = await getFantaTeams();
+  List<NbaTeam> teams = await getNbaTeams();
+  return Tuple3(first: players, second: fantateams, third: teams);
+}
+
+Future<Tuple2<FantaTeam, List<NbaTeam>>> getTeamPageInfo(String coachId) async {
+  List<FantaTeam> fantateams = await getFantaTeams();
+  List<NbaTeam> teams = await getNbaTeams();
+  return Tuple2(first: fantateams.firstWhere((t) => t.coachId == coachId), second: teams);
+}
+
+Future<List<FantaTeam>> getFantaTeams() async {
   var db = await openDatabase();
   var teams = await db.collection("FantaTeams").modernFindOne(selector: where.eq("name", "dunkettola"));
-  var team = (teams!["fantateams"] as List).firstWhere((p) => p["coachId"] == coachId);
-  return FantaTeam.fromJson(team).also((t) => t.players.sort(sortNbaPlayers));
+  return (teams!["fantateams"] as List).map((t) => FantaTeam.fromJson(t).also((t) => t.players.sort(sortNbaPlayers))).toList();
+}
+
+Future<FantaTeam> getFantaTeam(String coachId) async {
+  var teams = await getFantaTeams();
+  return teams.firstWhere((t) => t.coachId == coachId);
 }
 
 void addToTeam(String coachId, NbaPerson p) {
