@@ -1,3 +1,4 @@
+import 'package:championship_tracker/pages/players/filters.dart';
 import 'package:championship_tracker/pages/team/team.dart';
 import 'package:championship_tracker/utils/monads.dart';
 import 'package:flutter/material.dart';
@@ -34,18 +35,18 @@ class _FantaCoachPageState extends State<FantaCoachPage> {
 
   Widget coachesColumn(
       BuildContext context, AsyncSnapshot<List<FantaCoach>> snapshot) {
-    return ListView(
-      children: snapshot.hasData
-          ? snapshot.data!
-              .toList()
-              .also(
-                  (l) => l.sort((a, b) => a.firstName.compareTo(b.firstName)))
-              .map((coach) => fantaCoachTile(coach, () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => TeamPage(coachId: coach.id, owner: false,)));
-              }))
-              .toList()
-          : [const Center(child: CircularProgressIndicator())],
-    );
+    return snapshot.hasData
+        ? ListView(
+          children: snapshot.data!
+            .toList()
+            .also(
+                (l) => l.sort((a, b) => a.lastName.compareTo(b.lastName)))
+            .map((coach) => fantaCoachTile(coach, () {
+              //Navigator.push(context, MaterialPageRoute(builder: (context) => TeamPage(coachId: coach.id, owner: false,)));
+              myShowDialog(context, "${coach.firstName} ${coach.lastName}'s team", TeamPage(coachId: coach.id, owner: false));
+            }))
+            .toList())
+        : const Center(child: CircularProgressIndicator());
   }
 
   Widget fantaCoachTile(FantaCoach fc, Function() onPressed) {
