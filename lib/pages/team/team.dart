@@ -118,7 +118,7 @@ class TeamPageState extends State<TeamPage> {
       decoration: defaultContainerDecoration,
       child: ListView(
         children: team.players
-              .map((p) => playerTile(p, teams.firstWhere((t) => t.teamId == p.teamId), [], Icons.remove, () => widget.owner ? NetworkManager.removeFromTeam(widget.coachId, p) : null))
+              .map((p) => playerTile(p, teams.firstWhere((t) => t.teamId == p.teamId), [], Icons.remove, () => widget.owner ? NetworkManager.removeFromTeam(widget.coachId, p) : null, false, widget.owner))
               .toList()
             .also((it) {
               if (snapshot.data!.first.headCoach != null) {
@@ -129,7 +129,9 @@ class TeamPageState extends State<TeamPage> {
                         teams.firstWhere((t) => t.teamId == team.headCoach!.teamId),
                         [],
                         Icons.remove,
-                        () => widget.owner ? NetworkManager.removeFromTeam(widget.coachId, team.headCoach!) : null
+                        () => widget.owner ? NetworkManager.removeFromTeam(widget.coachId, team.headCoach!) : null,
+                        false,
+                        widget.owner
                     )
                 );
               }

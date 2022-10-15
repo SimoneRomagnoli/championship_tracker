@@ -186,7 +186,7 @@ int sortNbaPlayers(NbaPerson a, NbaPerson b) {
 }
 
 String nbaRequestUri(NbaRequests type) {
-  return "/10s/prod/v1/2022/${type.name}.json";
+  return "/10s/prod/v1/${DateTime.now().year.toString()}/${type.name}.json";
 }
 
 enum NbaRequests {

@@ -4,6 +4,7 @@ const double defaultFontSize = 15.0;
 const TextStyle titlesTextStyle = TextStyle(fontSize: defaultFontSize * 1.5, fontWeight: FontWeight.bold);
 const TextStyle defaultButtonTextStyle = TextStyle(fontSize: defaultFontSize, color: Colors.white);
 const EdgeInsetsGeometry defaultPadding = EdgeInsets.all(5.0);
+const EdgeInsetsGeometry miniPadding = EdgeInsets.all(1.0);
 
 BoxDecoration defaultContainerDecoration = const BoxDecoration();
 
