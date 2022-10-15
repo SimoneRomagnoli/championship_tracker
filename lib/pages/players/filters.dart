@@ -24,8 +24,7 @@ bool filterByName(NbaPerson p, String search) {
 }
 
 bool filterByPosition(NbaPerson p, Map<String, bool> positions) {
-  return !positions.values.reduce((acc, e) => acc || e) ||
-      p.pos.contains(RegExp(positions.keys
+  return p.pos.contains(RegExp(positions.keys
           .where((k) => positions[k]!)
           .reduce((acc, s) => "$acc|$s")));
 }
@@ -124,7 +123,7 @@ void myShowDialog(BuildContext context, String title, Widget content) {
                     decoration: defaultContainerDecoration,
                     padding: EdgeInsets.zero,
                     height: MediaQuery.of(context).size.height / 1.5,
-                    width: MediaQuery.of(context).size.width / 1.2,
+                    width: MediaQuery.of(context).size.width / 1.1,
                     child: content),
                 actions: <Widget>[
                   TextButton(

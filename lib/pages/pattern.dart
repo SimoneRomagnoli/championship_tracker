@@ -74,14 +74,13 @@ abstract class LoggedPageState extends State<LoggedPage> {
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
-          backgroundColor: Colors.blue,
+          backgroundColor: Colors.white,
           selectedItemColor: Colors.blue,
           unselectedItemColor: Colors.blueGrey,
           items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.gamepad), label: 'Players',),
+            BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Players',),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: 'My Team'),
-            BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Fantacoaches'),
-            BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings')
+            BottomNavigationBarItem(icon: Icon(Icons.remove_red_eye), label: 'Fantacoaches')
           ],
         ),
         body: getPageList(context)[_selectedIndex]);
@@ -94,15 +93,14 @@ abstract class LoggedPageState extends State<LoggedPage> {
   }
 
   List<double> elevationAppBar() {
-    return [0, 3, 3, 3];
+    return [0, 3, 3];
   }
 
   List<String> getPageTitle() {
     return [
       "Players",
       "${fantacoach.firstName} ${fantacoach.lastName}'s team",
-      "Fantacoach",
-      "Settings"
+      "Fantacoach"
     ];
   }
 
@@ -110,8 +108,7 @@ abstract class LoggedPageState extends State<LoggedPage> {
     return [
       content(context),
       TeamPage(coachId: fantacoach.id),
-      FantaCoachPage(coachId: fantacoach.id),
-      const Center(child: Text('Settings'),)
+      FantaCoachPage(coachId: fantacoach.id)
     ];
   }
 }
